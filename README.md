@@ -1,11 +1,11 @@
-lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Lion Star FC</title>
 
 <style>
-
 body{
 margin:0;
 font-family:Arial;
@@ -14,7 +14,6 @@ color:white;
 text-align:center;
 }
 
-/* HEADER */
 header{
 background:#111;
 padding:20px;
@@ -25,7 +24,6 @@ width:120px;
 border-radius:50%;
 }
 
-/* SECTION */
 section{
 background:white;
 color:black;
@@ -36,64 +34,33 @@ width:90%;
 max-width:900px;
 }
 
-/* PITCH */
 .pitch{
 position:relative;
-width:100%;
 height:500px;
-background:linear-gradient(#0f7a2f,#0b6623);
+background:green;
 border:4px solid white;
-border-radius:12px;
-overflow:hidden;
+border-radius:10px;
 }
 
-/* PLAYER CARD */
 .player{
 position:absolute;
-width:60px;
-text-align:center;
+background:white;
+padding:5px 10px;
+border-radius:15px;
+font-size:12px;
 cursor:grab;
 }
 
-.player img{
-width:60px;
-height:60px;
-border-radius:50%;
-border:2px solid white;
-}
-
-.player span{
-display:block;
-font-size:11px;
-background:white;
-color:black;
-border-radius:10px;
-margin-top:2px;
-}
-
-/* INPUT */
-input, select, button{
+button, input, select{
 padding:10px;
 margin:5px;
-border-radius:6px;
+border-radius:5px;
 border:none;
 }
 
 button{
 background:#111;
 color:white;
-cursor:pointer;
-}
-
-button:hover{
-background:#444;
-}
-
-footer{
-background:#111;
-padding:15px;
-color:#aaa;
-margin-top:20px;
 }
 
 </style>
@@ -106,6 +73,16 @@ margin-top:20px;
 <h1>⚽ Lion Star FC</h1>
 </header>
 
+<!-- ABOUT TEAM -->
+<section>
+<h2>About Team</h2>
+<p>
+Lion Star FC is a strong and passionate football club focused on teamwork,
+discipline, and winning mentality. We develop young talents and play with pride.
+</p>
+</section>
+
+<!-- ADMIN -->
 <section>
 <h2>Admin Panel</h2>
 
@@ -113,7 +90,11 @@ margin-top:20px;
 
 <input type="text" id="name" placeholder="Player name">
 
-<input type="file" id="image">
+<select id="formation" onchange="setFormation()">
+<option value="433">4-3-3</option>
+<option value="442">4-4-2</option>
+<option value="352">3-5-2</option>
+</select>
 
 <br>
 
@@ -122,143 +103,103 @@ margin-top:20px;
 
 </section>
 
+<!-- PITCH -->
 <section>
-<h2>Starting XI (Drag Players)</h2>
+<h2>Starting XI</h2>
 <div class="pitch" id="pitch"></div>
 </section>
 
-<section>
-<h2>Contact Us</h2>
-<p>📱 WhatsApp: 09115568667</p>
-<p>📷 Instagram: Lion_star_Fc</p>
-</section>
-
-<footer>
-© 2026 Lion Star FC
-</footer>
-
 <script>
 
-let pitch = document.getElementById("pitch");
+let maxPlayers = 11;
+let formation = "433";
 
-// LOAD SAVED
-window.onload = function(){
-let saved = JSON.parse(localStorage.getItem("team")) || [];
-saved.forEach(p => createPlayer(p));
+const positions = {
+
+"433":[
+{top:450,left:45}, // GK
+{top:350,left:15},{top:350,left:35},{top:350,left:55},{top:350,left:75},
+{top:250,left:25},{top:250,left:45},{top:250,left:65},
+{top:100,left:25},{top:80,left:45},{top:100,left:65}
+],
+
+"442":[
+{top:450,left:45},
+{top:350,left:15},{top:350,left:35},{top:350,left:55},{top:350,left:75},
+{top:250,left:15},{top:250,left:35},{top:250,left:55},{top:250,left:75},
+{top:100,left:35},{top:100,left:55}
+],
+
+"352":[
+{top:450,left:45},
+{top:350,left:25},{top:350,left:45},{top:350,left:65},
+{top:250,left:10},{top:250,left:30},{top:250,left:50},{top:250,left:70},{top:250,left:90},
+{top:100,left:35},{top:100,left:55}
+]
+
+};
+
+function setFormation(){
+formation = document.getElementById("formation").value;
+reloadTeam();
 }
 
 function addPlayer(){
 
 let password = document.getElementById("pass").value;
+if(password !== "1234"){ alert("Wrong password"); return; }
 
-if(password !== "1234"){
-alert("Wrong password!");
+let team = JSON.parse(localStorage.getItem("team")) || [];
+
+if(team.length >= maxPlayers){
+alert("Only 11 players allowed!");
 return;
 }
 
 let name = document.getElementById("name").value;
-let file = document.getElementById("image").files[0];
 
-if(!file){ alert("Select image"); return; }
-
-let reader = new FileReader();
-
-reader.onload = function(e){
-
-let player = {
-name:name,
-img:e.target.result,
-x:100,
-y:100
-};
-
-createPlayer(player);
-
-// SAVE
-let team = JSON.parse(localStorage.getItem("team")) || [];
-team.push(player);
+team.push({name:name});
 localStorage.setItem("team", JSON.stringify(team));
 
-};
-
-reader.readAsDataURL(file);
-
+reloadTeam();
 }
 
-function createPlayer(data){
+function reloadTeam(){
+
+let pitch = document.getElementById("pitch");
+pitch.innerHTML = "";
+
+let team = JSON.parse(localStorage.getItem("team")) || [];
+
+team.forEach((p,i)=>{
+
+let pos = positions[formation][i];
 
 let div = document.createElement("div");
 div.className = "player";
-div.style.left = data.x + "px";
-div.style.top = data.y + "px";
+div.style.top = pos.top + "px";
+div.style.left = pos.left + "%";
+div.textContent = p.name;
 
-div.innerHTML = `
-<img src="${data.img}">
-<span>${data.name}</span>
-`;
-
-makeDraggable(div,data);
-
-div.onclick = function(e){
-e.stopPropagation();
-
-let newName = prompt("Edit name:", data.name);
-if(newName){
-data.name = newName;
-div.querySelector("span").textContent = newName;
-saveAll();
-}
+// REMOVE PLAYER
+div.onclick = function(){
+team.splice(i,1);
+localStorage.setItem("team", JSON.stringify(team));
+reloadTeam();
 };
 
 pitch.appendChild(div);
-}
 
-function makeDraggable(el,data){
-
-let offsetX, offsetY;
-
-el.onmousedown = function(e){
-offsetX = e.offsetX;
-offsetY = e.offsetY;
-
-document.onmousemove = function(e){
-el.style.left = (e.pageX - pitch.offsetLeft - offsetX) + "px";
-el.style.top = (e.pageY - pitch.offsetTop - offsetY) + "px";
-
-data.x = parseInt(el.style.left);
-data.y = parseInt(el.style.top);
-};
-
-document.onmouseup = function(){
-document.onmousemove = null;
-saveAll();
-};
-};
-
-}
-
-function saveAll(){
-
-let players = [];
-document.querySelectorAll(".player").forEach(el=>{
-let name = el.querySelector("span").textContent;
-let img = el.querySelector("img").src;
-
-players.push({
-name:name,
-img:img,
-x:parseInt(el.style.left),
-y:parseInt(el.style.top)
-});
 });
 
-localStorage.setItem("team", JSON.stringify(players));
 }
 
 function clearTeam(){
 localStorage.removeItem("team");
-pitch.innerHTML = "";
+reloadTeam();
 }
+
+reloadTeam();
 
 </script>
 
