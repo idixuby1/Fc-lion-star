@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
+ lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -80,7 +79,7 @@ margin-top:20px;
 <body>
 
 <header>
-<img src="logo.png">
+<img src="images - 2026-03-03T054620.224.jpeg">
 <h1>⚽ Lion Star FC</h1>
 </header>
 
@@ -196,4 +195,4 @@ function clearTeam(){localStorage.removeItem("team"); reloadTeam();}
 reloadTeam();
 </script>
 </body>
-</html>
+
