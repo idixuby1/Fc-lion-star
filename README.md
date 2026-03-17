@@ -1,150 +1,89 @@
-
+ <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Lion Star FC</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-
 <style>
 
 body{
 margin:0;
-font-family:'Roboto',sans-serif;
+font-family:Arial;
 background:#0b6623;
 color:white;
 text-align:center;
 }
 
 /* HEADER */
-
 header{
 background:#111;
-padding:30px 20px;
+padding:20px;
 }
 
 header img{
-width:150px;
-height:150px;
+width:120px;
 border-radius:50%;
-border:4px solid white;
-margin-bottom:10px;
 }
 
-header h1{
-margin:0;
-font-size:2.5em;
-letter-spacing:2px;
-}
-
-/* NAVIGATION */
-
-nav{
-background:#000;
-padding:10px;
-}
-
-nav a{
-color:white;
-margin:0 15px;
-text-decoration:none;
-font-weight:bold;
-}
-
-nav a:hover{
-color:#0b6623;
-}
-
-/* SECTIONS */
-
+/* SECTION */
 section{
 background:white;
 color:black;
 margin:20px auto;
-padding:25px;
+padding:20px;
 border-radius:10px;
 width:90%;
 max-width:900px;
 }
 
-section h2{
-color:#0b6623;
-margin-top:0;
-}
-
-/* MATCH TABLE */
-
-table{
+/* PITCH */
+.pitch{
+position:relative;
 width:100%;
-border-collapse:collapse;
-}
-
-table th,table td{
-padding:10px;
-border-bottom:1px solid #ccc;
-}
-
-/* PLAYERS */
-
-.players{
-display:flex;
-flex-wrap:wrap;
-justify-content:center;
-gap:20px;
+height:500px;
+background:green;
+border:5px solid white;
+border-radius:10px;
 }
 
 .player{
-background:#eee;
-padding:15px;
-border-radius:10px;
-width:150px;
+position:absolute;
+background:white;
+color:black;
+padding:5px 10px;
+border-radius:20px;
+font-size:12px;
 }
 
-.player img{
-width:100%;
-border-radius:10px;
+/* FORMATION POSITIONS */
+.gk{ bottom:10px; left:45%; }
+
+.df1{ bottom:80px; left:15%; }
+.df2{ bottom:80px; left:35%; }
+.df3{ bottom:80px; left:55%; }
+.df4{ bottom:80px; left:75%; }
+
+.mf1{ bottom:200px; left:25%; }
+.mf2{ bottom:200px; left:45%; }
+.mf3{ bottom:200px; left:65%; }
+
+.fw1{ top:50px; left:25%; }
+.fw2{ top:30px; left:45%; }
+.fw3{ top:50px; left:65%; }
+
+/* INPUT */
+input, select, button{
+padding:10px;
+margin:5px;
+border-radius:5px;
+border:none;
 }
 
-/* GALLERY */
-
-.gallery{
-display:flex;
-flex-wrap:wrap;
-justify-content:center;
-gap:15px;
-}
-
-.gallery img{
-width:220px;
-height:130px;
-object-fit:cover;
-border-radius:8px;
-}
-
-/* BUTTON */
-
-.button{
-display:inline-block;
-padding:12px 20px;
+button{
 background:#111;
 color:white;
-text-decoration:none;
-border-radius:5px;
-margin-top:10px;
-}
-
-.button:hover{
-background:#444;
-}
-
-/* FOOTER */
-
-footer{
-margin-top:20px;
-padding:15px;
-background:#111;
-color:#aaa;
+cursor:pointer;
 }
 
 </style>
@@ -153,132 +92,89 @@ color:#aaa;
 <body>
 
 <header>
-
-<img src="lion-star-logo.jpg" alt="Lion Star FC Logo">
-
+<img src="logo.png">
 <h1>⚽ Lion Star FC</h1>
-
-<p>The Pride of Football</p>
-
 </header>
 
-<nav>
-
-<a href="#">Home</a>
-<a href="#">Matches</a>
-<a href="#">Players</a>
-<a href="#">Gallery</a>
-<a href="#">Contact</a>
-
-</nav>
-
 <section>
 
-<h2>About Our Club</h2>
+<h2>Admin Panel (Add Player)</h2>
 
-<p>
-Lion Star FC is a passionate football club dedicated to developing young talents
-and competing at the highest level. Our mission is teamwork, discipline,
-and excellence on and off the field.
-</p>
+<input type="password" id="pass" placeholder="Enter password">
+<br>
+
+<input type="text" id="name" placeholder="Player name">
+
+<select id="position">
+<option value="gk">Goalkeeper</option>
+<option value="df1">Defender 1</option>
+<option value="df2">Defender 2</option>
+<option value="df3">Defender 3</option>
+<option value="df4">Defender 4</option>
+<option value="mf1">Midfielder 1</option>
+<option value="mf2">Midfielder 2</option>
+<option value="mf3">Midfielder 3</option>
+<option value="fw1">Forward 1</option>
+<option value="fw2">Striker</option>
+<option value="fw3">Forward 2</option>
+</select>
+
+<br>
+
+<button onclick="addPlayer()">Add to Pitch</button>
 
 </section>
 
 <section>
 
-<h2>Latest Match Results</h2>
+<h2>Starting XI (4-3-3 Formation)</h2>
 
-<table>
-
-<tr>
-<th>Match</th>
-<th>Result</th>
-</tr>
-
-<tr>
-<td>Lion Star FC vs Young Stars</td>
-<td>2 - 1</td>
-</tr>
-
-<tr>
-<td>Lion Star FC vs City Boys</td>
-<td>3 - 0</td>
-</tr>
-
-<tr>
-<td>Lion Star FC vs Eagles United</td>
-<td>1 - 1</td>
-</tr>
-
-</table>
+<div class="pitch" id="pitch"></div>
 
 </section>
 
-<section>
+<script>
 
-<h2>Team Players</h2>
+// LOAD SAVED TEAM
+window.onload = function(){
+let saved = JSON.parse(localStorage.getItem("team")) || [];
+saved.forEach(p => displayPlayer(p.name, p.pos));
+}
 
-<div class="players">
+function addPlayer(){
 
-<div class="player">
-<img src="player1.jpg">
-<p>Ahmed Musa</p>
-<p>Forward</p>
-</div>
+let password = document.getElementById("pass").value;
 
-<div class="player">
-<img src="player2.jpg">
-<p>Ali Ibrahim</p>
-<p>Midfielder</p>
-</div>
+if(password !== "1234"){
+alert("Wrong password!");
+return;
+}
 
-<div class="player">
-<img src="player3.jpg">
-<p>Usman Bello</p>
-<p>Defender</p>
-</div>
+let name = document.getElementById("name").value;
+let pos = document.getElementById("position").value;
 
-<div class="player">
-<img src="player4.jpg">
-<p>Sani Abdullahi</p>
-<p>Goalkeeper</p>
-</div>
+displayPlayer(name, pos);
 
-</div>
+// SAVE
+let team = JSON.parse(localStorage.getItem("team")) || [];
+team.push({name:name, pos:pos});
+localStorage.setItem("team", JSON.stringify(team));
 
-</section>
+}
 
-<section>
+function displayPlayer(name, pos){
 
-<h2>Match Gallery</h2>
+let pitch = document.getElementById("pitch");
 
-<div class="gallery">
+let player = document.createElement("div");
+player.className = "player " + pos;
+player.textContent = name;
 
-<img src="match1.jpg">
-<img src="match2.jpg">
-<img src="match3.jpg">
+pitch.appendChild(player);
 
-</div>
+}
 
-</section>
-
-<section>
-
-<h2>Contact Us</h2>
-
-<p>📱 WhatsApp: 09115568667</p>
-
-<p>📷 Instagram: @fc_lions_star</p>
-
-<a href="https://wa.me/09115568667" class="button">Chat on WhatsApp</a>
-
-</section>
-
-<footer>
-
-© 2026 Lion Star FC — All Rights Reserved
-
-</footer>
+</script>
 
 </body>
 </html>
