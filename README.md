@@ -1,5 +1,4 @@
- <!DOCTYPE html>
-<html lang="en">
+lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -32,7 +31,7 @@ background:white;
 color:black;
 margin:20px auto;
 padding:20px;
-border-radius:10px;
+border-radius:12px;
 width:90%;
 max-width:900px;
 }
@@ -42,41 +41,41 @@ max-width:900px;
 position:relative;
 width:100%;
 height:500px;
-background:green;
-border:5px solid white;
-border-radius:10px;
+background:linear-gradient(#0f7a2f,#0b6623);
+border:4px solid white;
+border-radius:12px;
+overflow:hidden;
 }
 
+/* PLAYER CARD */
 .player{
 position:absolute;
-background:white;
-color:black;
-padding:5px 10px;
-border-radius:20px;
-font-size:12px;
+width:60px;
+text-align:center;
+cursor:grab;
 }
 
-/* FORMATION POSITIONS */
-.gk{ bottom:10px; left:45%; }
+.player img{
+width:60px;
+height:60px;
+border-radius:50%;
+border:2px solid white;
+}
 
-.df1{ bottom:80px; left:15%; }
-.df2{ bottom:80px; left:35%; }
-.df3{ bottom:80px; left:55%; }
-.df4{ bottom:80px; left:75%; }
-
-.mf1{ bottom:200px; left:25%; }
-.mf2{ bottom:200px; left:45%; }
-.mf3{ bottom:200px; left:65%; }
-
-.fw1{ top:50px; left:25%; }
-.fw2{ top:30px; left:45%; }
-.fw3{ top:50px; left:65%; }
+.player span{
+display:block;
+font-size:11px;
+background:white;
+color:black;
+border-radius:10px;
+margin-top:2px;
+}
 
 /* INPUT */
 input, select, button{
 padding:10px;
 margin:5px;
-border-radius:5px;
+border-radius:6px;
 border:none;
 }
 
@@ -84,6 +83,17 @@ button{
 background:#111;
 color:white;
 cursor:pointer;
+}
+
+button:hover{
+background:#444;
+}
+
+footer{
+background:#111;
+padding:15px;
+color:#aaa;
+margin-top:20px;
 }
 
 </style>
@@ -97,48 +107,44 @@ cursor:pointer;
 </header>
 
 <section>
+<h2>Admin Panel</h2>
 
-<h2>Admin Panel (Add Player)</h2>
-
-<input type="password" id="pass" placeholder="Enter password">
-<br>
+<input type="password" id="pass" placeholder="Password"><br>
 
 <input type="text" id="name" placeholder="Player name">
 
-<select id="position">
-<option value="gk">Goalkeeper</option>
-<option value="df1">Defender 1</option>
-<option value="df2">Defender 2</option>
-<option value="df3">Defender 3</option>
-<option value="df4">Defender 4</option>
-<option value="mf1">Midfielder 1</option>
-<option value="mf2">Midfielder 2</option>
-<option value="mf3">Midfielder 3</option>
-<option value="fw1">Forward 1</option>
-<option value="fw2">Striker</option>
-<option value="fw3">Forward 2</option>
-</select>
+<input type="file" id="image">
 
 <br>
 
-<button onclick="addPlayer()">Add to Pitch</button>
+<button onclick="addPlayer()">Add Player</button>
+<button onclick="clearTeam()">Clear Team</button>
 
 </section>
 
 <section>
-
-<h2>Starting XI (4-3-3 Formation)</h2>
-
+<h2>Starting XI (Drag Players)</h2>
 <div class="pitch" id="pitch"></div>
-
 </section>
+
+<section>
+<h2>Contact Us</h2>
+<p>📱 WhatsApp: 09115568667</p>
+<p>📷 Instagram: Lion_star_Fc</p>
+</section>
+
+<footer>
+© 2026 Lion Star FC
+</footer>
 
 <script>
 
-// LOAD SAVED TEAM
+let pitch = document.getElementById("pitch");
+
+// LOAD SAVED
 window.onload = function(){
 let saved = JSON.parse(localStorage.getItem("team")) || [];
-saved.forEach(p => displayPlayer(p.name, p.pos));
+saved.forEach(p => createPlayer(p));
 }
 
 function addPlayer(){
@@ -151,27 +157,107 @@ return;
 }
 
 let name = document.getElementById("name").value;
-let pos = document.getElementById("position").value;
+let file = document.getElementById("image").files[0];
 
-displayPlayer(name, pos);
+if(!file){ alert("Select image"); return; }
+
+let reader = new FileReader();
+
+reader.onload = function(e){
+
+let player = {
+name:name,
+img:e.target.result,
+x:100,
+y:100
+};
+
+createPlayer(player);
 
 // SAVE
 let team = JSON.parse(localStorage.getItem("team")) || [];
-team.push({name:name, pos:pos});
+team.push(player);
 localStorage.setItem("team", JSON.stringify(team));
+
+};
+
+reader.readAsDataURL(file);
 
 }
 
-function displayPlayer(name, pos){
+function createPlayer(data){
 
-let pitch = document.getElementById("pitch");
+let div = document.createElement("div");
+div.className = "player";
+div.style.left = data.x + "px";
+div.style.top = data.y + "px";
 
-let player = document.createElement("div");
-player.className = "player " + pos;
-player.textContent = name;
+div.innerHTML = `
+<img src="${data.img}">
+<span>${data.name}</span>
+`;
 
-pitch.appendChild(player);
+makeDraggable(div,data);
 
+div.onclick = function(e){
+e.stopPropagation();
+
+let newName = prompt("Edit name:", data.name);
+if(newName){
+data.name = newName;
+div.querySelector("span").textContent = newName;
+saveAll();
+}
+};
+
+pitch.appendChild(div);
+}
+
+function makeDraggable(el,data){
+
+let offsetX, offsetY;
+
+el.onmousedown = function(e){
+offsetX = e.offsetX;
+offsetY = e.offsetY;
+
+document.onmousemove = function(e){
+el.style.left = (e.pageX - pitch.offsetLeft - offsetX) + "px";
+el.style.top = (e.pageY - pitch.offsetTop - offsetY) + "px";
+
+data.x = parseInt(el.style.left);
+data.y = parseInt(el.style.top);
+};
+
+document.onmouseup = function(){
+document.onmousemove = null;
+saveAll();
+};
+};
+
+}
+
+function saveAll(){
+
+let players = [];
+document.querySelectorAll(".player").forEach(el=>{
+let name = el.querySelector("span").textContent;
+let img = el.querySelector("img").src;
+
+players.push({
+name:name,
+img:img,
+x:parseInt(el.style.left),
+y:parseInt(el.style.top)
+});
+});
+
+localStorage.setItem("team", JSON.stringify(players));
+}
+
+function clearTeam(){
+localStorage.removeItem("team");
+pitch.innerHTML = "";
 }
 
 </script>
