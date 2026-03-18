@@ -1,9 +1,9 @@
-lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Lion Star FC</title>
-
 <style>
 body{
     margin:0;
@@ -121,9 +121,7 @@ footer{
 }
 </style>
 </head>
-
 <body>
-
 <header>
 <img src="images - 2026-03-03T054620.224.jpeg" alt="Lion Star FC Logo">
 <h1>⚽ Lion Star FC</h1>
@@ -145,6 +143,94 @@ footer{
 <section id="adminPanel" style="display:none;">
 <h2>Admin Panel</h2>
 <button onclick="logout()">Logout</button><br>
-
 <input type="text" id="playerName" placeholder="Player name">
-<button class="adminOnly" onclick="addPlayerInfo()">Add Player</
+<button class="adminOnly" onclick="addPlayerInfo()">Add Player</button>
+<input type="text" id="matchText" placeholder="Match">
+<button class="adminOnly" onclick="addMatch()">Add Match</button>
+<input type="text" id="newsText" placeholder="News">
+<button class="adminOnly" onclick="addNews()">Add News</button>
+<input type="file" id="galleryImage">
+<button class="adminOnly" onclick="addGallery()">Add Image</button>
+<br><br>
+<input type="text" id="name" placeholder="Player name">
+<input type="file" id="image"><br>
+<select id="formation" onchange="setFormation()">
+<option value="433">4-3-3</option>
+<option value="442">4-4-2</option>
+<option value="352">3-5-2</option>
+<option value="4231">4-2-3-1</option>
+<option value="343">3-4-3</option>
+<option value="532">5-3-2</option>
+</select>
+<button class="adminOnly" onclick="addPlayer()">Add to Pitch</button>
+<button class="adminOnly" onclick="clearTeam()">Clear Team</button>
+</section>
+
+<section id="playersSection">
+<h2>Players</h2>
+<div id="playersList"></div>
+</section>
+
+<section id="matchesSection">
+<h2>Matches</h2>
+<div id="matchesList"></div>
+</section>
+
+<section id="newsSection">
+<h2>News</h2>
+<div id="newsList"></div>
+</section>
+
+<section id="gallerySection">
+<h2>Gallery</h2>
+<div id="galleryList"></div>
+</section>
+
+<section>
+<h2>Starting XI</h2>
+<div class="pitch" id="pitch"></div>
+</section>
+
+<footer>© 2026 Lion Star FC</footer>
+
+<script>
+// (ALL YOUR JAVASCRIPT — unchanged)
+let adminPanel = document.getElementById("adminPanel");
+let loginBox = document.getElementById("loginBox");
+let pitch = document.getElementById("pitch");
+
+function toggleLogin(){
+    loginBox.style.display = loginBox.style.display==="none" ? "block" : "none";
+}
+
+function login(){
+    let u = document.getElementById("user").value;
+    let p = document.getElementById("pass").value;
+    if(u==="admin" && p==="1234"){
+        localStorage.setItem("admin","true");
+        adminPanel.style.display="block";
+        document.querySelectorAll(".adminOnly").forEach(el=> el.style.display="inline-block");
+        loginBox.style.display="none";
+    }else{
+        alert("Wrong login!");
+    }
+}
+
+if(localStorage.getItem("admin")==="true"){
+    adminPanel.style.display="block";
+    document.querySelectorAll(".adminOnly").forEach(el=> el.style.display="inline-block");
+}
+
+function logout(){
+    localStorage.removeItem("admin");
+    location.reload();
+}
+
+let formation="433";
+const positions={
+"433":[{top:450,left:45},{top:350,left:15},{top:350,left:35},{top:350,left:55},{top:350,left:75},{top:250,left:25},{top:250,left:45},{top:250,left:65},{top:100,left:25},{top:80,left:45},{top:100,left:65}],
+"442":[{top:450,left:45},{top:350,left:15},{top:350,left:35},{top:350,left:55},{top:350,left:75},{top:250,left:15},{top:250,left:35},{top:250,left:55},{top:250,left:75},{top:100,left:35},{top:100,left:55}],
+"352":[{top:450,left:45},{top:350,left:25},{top:350,left:45},{top:350,left:65},{top:250,left:10},{top:250,left:30},{top:250,left:50},{top:250,left:70},{top:250,left:90},{top:100,left:35},{top:100,left:55}],
+"4231":[{top:450,left:45},{top:350,left:15},{top:350,left:35},{top:350,left:55},{top:350,left:75},{top:280,left:35},{top:280,left:55},{top:200,left:25},{top:200,left:45},{top:200,left:65},{top:80,left:45}],
+"343":[{top:450,left:45},{top:350,left:25},{top:350,left:45},{top:350,left:65},{top:250,left:10},{top:250,left:30},{top:250,left:50},{top:250,left:70},{top:100,left:25},{top:80,left:45},{top:100,left:65}],
+"532":[{top:450,left:45},{top:350,left:10},{top:350,left:30},{top:350,left:50},{top:350,left:70},{top:350,left:90},{top:250,left:30},{top:250,left:50},{top:250,left
