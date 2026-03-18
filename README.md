@@ -4,11 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Lion Star FC</title>
-
 <style>
 body{
     margin:0;
-    font-family: Arial, sans-serif;
+    font-family:Arial,sans-serif;
     background:#0b6623;
     color:white;
     text-align:center;
@@ -17,27 +16,11 @@ body{
 header{
     background:#111;
     padding:20px;
-    position:relative;
 }
 
 header img{
     width:100px;
     border-radius:50%;
-}
-
-/* FLOATING ADMIN BUTTON */
-#adminBtn{
-    position:fixed;
-    bottom:20px;
-    right:20px;
-    background:#444;
-    color:white;
-    padding:10px 15px;
-    border:none;
-    border-radius:50%;
-    font-size:16px;
-    cursor:pointer;
-    z-index:1000;
 }
 
 /* LOGIN BOX */
@@ -54,6 +37,7 @@ header img{
     z-index:1000;
 }
 
+/* SECTION STYLES */
 section{
     margin:20px auto;
     padding:20px;
@@ -64,11 +48,11 @@ section{
 }
 
 /* Section Colors */
+#adminPanel{ background:#eeeeee; }
 #playersSection{ background:#ddeeff; }
 #matchesSection{ background:#ddffdd; }
 #newsSection{ background:#ffdddd; }
 #gallerySection{ background:#ffffdd; }
-#adminPanel{ background:#eeeeee; position:fixed; top:10%; right:10%; width:300px; max-width:90%; padding:20px; border-radius:12px; display:none; z-index:999; box-shadow:0 0 10px black; }
 
 /* PITCH */
 .pitch{
@@ -86,14 +70,12 @@ section{
     text-align:center;
     cursor:grab;
 }
-
 .player img{
     width:60px;
     height:60px;
     border-radius:50%;
     border:2px solid white;
 }
-
 .player span{
     display:block;
     font-size:12px;
@@ -109,17 +91,14 @@ button,input,select{
     border:none;
     border-radius:5px;
 }
-
 button{
     background:#111;
     color:white;
     cursor:pointer;
 }
-
 .adminOnly{
     display:none;
 }
-
 .deleteBtn{
     background:red;
     font-size:12px;
@@ -134,18 +113,15 @@ footer{
 }
 </style>
 </head>
-
 <body>
 
 <header>
 <img src="images - 2026-03-03T054620.224.jpeg" alt="Lion Star FC Logo">
 <h1>⚽ Lion Star FC</h1>
+<button onclick="toggleLogin()">Admin Login</button>
 </header>
 
-<!-- FLOATING ADMIN BUTTON -->
-<button id="adminBtn" onclick="toggleLogin()">⚙️</button>
-
-<!-- LOGIN -->
+<!-- LOGIN BOX -->
 <div id="loginBox">
 <h3>Admin Login</h3>
 <input type="text" id="user" placeholder="Username"><br>
@@ -166,18 +142,16 @@ footer{
 <button onclick="logout()">Logout</button><br>
 
 <input type="text" id="playerName" placeholder="Player name">
-<button class="adminOnly" onclick="addPlayerInfo()">Add Player</button>
+<button class="adminOnly" onclick="addPlayerInfo()">Add Player</button><br>
 
 <input type="text" id="matchText" placeholder="Match">
-<button class="adminOnly" onclick="addMatch()">Add Match</button>
+<button class="adminOnly" onclick="addMatch()">Add Match</button><br>
 
 <input type="text" id="newsText" placeholder="News">
-<button class="adminOnly" onclick="addNews()">Add News</button>
+<button class="adminOnly" onclick="addNews()">Add News</button><br>
 
 <input type="file" id="galleryImage">
-<button class="adminOnly" onclick="addGallery()">Add Image</button>
-
-<br><br>
+<button class="adminOnly" onclick="addGallery()">Add Image</button><br><br>
 
 <input type="text" id="name" placeholder="Player name">
 <input type="file" id="image"><br>
@@ -194,7 +168,6 @@ footer{
     <option value="4141">4-1-4-1</option>
     <option value="343d">3-4-3 Diamond</option>
 </select>
-
 <button class="adminOnly" onclick="addPlayer()">Add to Pitch</button>
 <button class="adminOnly" onclick="clearTeam()">Clear Team</button>
 </section>
@@ -232,7 +205,7 @@ footer{
 <footer>© 2026 Lion Star FC</footer>
 
 <script>
-// VARIABLES
+// ELEMENTS
 let adminPanel = document.getElementById("adminPanel");
 let loginBox = document.getElementById("loginBox");
 let pitch = document.getElementById("pitch");
@@ -246,20 +219,17 @@ function toggleLogin(){
 function login(){
     let u = document.getElementById("user").value;
     let p = document.getElementById("pass").value;
-
     if(u==="admin" && p==="1234"){
         localStorage.setItem("admin","true");
-        adminPanel.style.display="block";
         document.querySelectorAll(".adminOnly").forEach(el=> el.style.display="inline-block");
         loginBox.style.display="none";
-    }else{
+    } else {
         alert("Wrong login!");
     }
 }
 
 // AUTO LOGIN
 if(localStorage.getItem("admin")==="true"){
-    adminPanel.style.display="block";
     document.querySelectorAll(".adminOnly").forEach(el=> el.style.display="inline-block");
 }
 
@@ -297,7 +267,6 @@ function addPlayer(){
 
     let file = document.getElementById("image").files[0];
     let reader = new FileReader();
-
     reader.onload = function(e){
         team.push({name:document.getElementById("name").value, img:e.target.result, x:0, y:0});
         localStorage.setItem("team",JSON.stringify(team));
@@ -366,7 +335,7 @@ function deleteItem(type,index){
     loadAll();
 }
 
-// LOAD LIST
+// LOAD LISTS
 function loadList(type,element){
     let list=document.getElementById(element);
     list.innerHTML="";
@@ -429,6 +398,5 @@ function loadAll(){
 
 loadAll();
 </script>
-
 </body>
 </html>
