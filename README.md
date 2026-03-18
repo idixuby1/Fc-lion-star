@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
+
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -23,6 +22,21 @@ header img{
     border-radius:50%;
 }
 
+/* FLOATING ADMIN BUTTON */
+#adminBtn{
+    position:fixed;
+    bottom:20px;
+    right:20px;
+    background:#444;
+    color:white;
+    padding:10px;
+    border:none;
+    border-radius:50%;
+    font-size:16px;
+    cursor:pointer;
+    z-index:1000;
+}
+
 /* LOGIN BOX */
 #loginBox{
     display:none;
@@ -34,6 +48,23 @@ header img{
     padding:20px;
     border-radius:12px;
     width:220px;
+    z-index:1001;
+    color:white;
+}
+
+/* ADMIN PANEL */
+#adminPanel{
+    display:none;
+    background:#eeeeee;
+    color:black;
+    position:fixed;
+    top:10%;
+    right:10%;
+    width:300px;
+    max-width:90%;
+    padding:20px;
+    border-radius:12px;
+    box-shadow:0 0 10px black;
     z-index:1000;
 }
 
@@ -48,7 +79,6 @@ section{
 }
 
 /* Section Colors */
-#adminPanel{ background:#eeeeee; }
 #playersSection{ background:#ddeeff; }
 #matchesSection{ background:#ddffdd; }
 #newsSection{ background:#ffdddd; }
@@ -118,8 +148,10 @@ footer{
 <header>
 <img src="images - 2026-03-03T054620.224.jpeg" alt="Lion Star FC Logo">
 <h1>⚽ Lion Star FC</h1>
-<button onclick="toggleLogin()">Admin Login</button>
 </header>
+
+<!-- FLOATING ADMIN BUTTON -->
+<button id="adminBtn" onclick="toggleLogin()">⚙️</button>
 
 <!-- LOGIN BOX -->
 <div id="loginBox">
@@ -210,17 +242,18 @@ let adminPanel = document.getElementById("adminPanel");
 let loginBox = document.getElementById("loginBox");
 let pitch = document.getElementById("pitch");
 
-// TOGGLE LOGIN
+// TOGGLE LOGIN BOX
 function toggleLogin(){
     loginBox.style.display = loginBox.style.display==="none" ? "block" : "none";
 }
 
-// LOGIN
+// LOGIN FUNCTION
 function login(){
     let u = document.getElementById("user").value;
     let p = document.getElementById("pass").value;
     if(u==="admin" && p==="1234"){
         localStorage.setItem("admin","true");
+        adminPanel.style.display="block";
         document.querySelectorAll(".adminOnly").forEach(el=> el.style.display="inline-block");
         loginBox.style.display="none";
     } else {
@@ -230,6 +263,7 @@ function login(){
 
 // AUTO LOGIN
 if(localStorage.getItem("admin")==="true"){
+    adminPanel.style.display="block";
     document.querySelectorAll(".adminOnly").forEach(el=> el.style.display="inline-block");
 }
 
@@ -254,7 +288,7 @@ const positions = {
 "343d":[{top:450,left:45},{top:350,left:25},{top:350,left:45},{top:350,left:65},{top:250,left:35},{top:250,left:45},{top:250,left:55},{top:100,left:25},{top:80,left:45},{top:100,left:65},{top:200,left:45}]
 };
 
-// FORMATION SWITCH
+// SWITCH FORMATION
 function setFormation(){
     formation=document.getElementById("formation").value;
     reloadTeam();
@@ -268,7 +302,7 @@ function addPlayer(){
     let file = document.getElementById("image").files[0];
     let reader = new FileReader();
     reader.onload = function(e){
-        team.push({name:document.getElementById("name").value, img:e.target.result, x:0, y:0});
+        team.push({name:document.getElementById("name").value,img:e.target.result,x:0,y:0});
         localStorage.setItem("team",JSON.stringify(team));
         reloadTeam();
     };
@@ -286,23 +320,20 @@ function reloadTeam(){
         div.style.top=(p.y||pos.top)+"px";
         div.style.left=(p.x||pos.left)+"%";
         div.innerHTML=`<img src="${p.img}"><span>${p.name}</span>`;
-
-        div.onmousedown = function(e){
-            let ox=e.offsetX, oy=e.offsetY;
+        div.onmousedown=function(e){
+            let ox=e.offsetX,oy=e.offsetY;
             function moveHandler(e){
                 div.style.left=(e.pageX-pitch.offsetLeft-ox)/pitch.offsetWidth*100+"%";
                 div.style.top=(e.pageY-pitch.offsetTop-oy)+"px";
             }
             document.addEventListener("mousemove",moveHandler);
-            document.addEventListener("mouseup",()=>{ document.removeEventListener("mousemove",moveHandler); saveTeam(); }, {once:true});
+            document.addEventListener("mouseup",()=>{document.removeEventListener("mousemove",moveHandler); saveTeam();},{once:true});
         };
-
         div.ondblclick=function(){
             team.splice(i,1);
             localStorage.setItem("team",JSON.stringify(team));
             reloadTeam();
         };
-
         pitch.appendChild(div);
     });
 }
@@ -311,12 +342,7 @@ function reloadTeam(){
 function saveTeam(){
     let team=[];
     document.querySelectorAll(".player").forEach(el=>{
-        team.push({
-            name: el.querySelector("span").textContent,
-            img: el.querySelector("img").src,
-            x: parseFloat(el.style.left),
-            y: parseFloat(el.style.top)
-        });
+        team.push({name:el.querySelector("span").textContent,img:el.querySelector("img").src,x:parseFloat(el.style.left),y:parseFloat(el.style.top)});
     });
     localStorage.setItem("team",JSON.stringify(team));
 }
