@@ -68,7 +68,7 @@ section{
 #matchesSection{ background:#ddffdd; }
 #newsSection{ background:#ffdddd; }
 #gallerySection{ background:#ffffdd; }
-#adminPanel{ background:#eeeeee; position:fixed; top:10%; right:10%; width:350px; max-width:90%; padding:20px; border-radius:12px; display:none; z-index:999; box-shadow:0 0 10px black; }
+#adminPanel{ background:#eeeeee; position:fixed; top:10%; right:10%; width:300px; max-width:90%; padding:20px; border-radius:12px; display:none; z-index:999; box-shadow:0 0 10px black; }
 
 /* PITCH */
 .pitch{
@@ -163,9 +163,25 @@ footer{
 <!-- ADMIN PANEL -->
 <section id="adminPanel">
 <h2>Admin Panel</h2>
-<button onclick="logout()">Logout</button><br><br>
+<button onclick="logout()">Logout</button><br>
 
-<h3>Formation</h3>
+<input type="text" id="playerName" placeholder="Player name">
+<button class="adminOnly" onclick="addPlayerInfo()">Add Player</button>
+
+<input type="text" id="matchText" placeholder="Match">
+<button class="adminOnly" onclick="addMatch()">Add Match</button>
+
+<input type="text" id="newsText" placeholder="News">
+<button class="adminOnly" onclick="addNews()">Add News</button>
+
+<input type="file" id="galleryImage">
+<button class="adminOnly" onclick="addGallery()">Add Image</button>
+
+<br><br>
+
+<input type="text" id="name" placeholder="Player name">
+<input type="file" id="image"><br>
+
 <select id="formation" onchange="setFormation()">
     <option value="433">4-3-3</option>
     <option value="442">4-4-2</option>
@@ -179,42 +195,32 @@ footer{
     <option value="343d">3-4-3 Diamond</option>
 </select>
 
-<hr>
-
-<h3>Add Player</h3>
-<input type="text" id="name" placeholder="Player name">
-<input type="file" id="image"><br>
 <button class="adminOnly" onclick="addPlayer()">Add to Pitch</button>
 <button class="adminOnly" onclick="clearTeam()">Clear Team</button>
+</section>
 
-<hr>
-
-<h3>Players</h3>
-<input type="text" id="playerName" placeholder="Player name">
-<button class="adminOnly" onclick="addPlayerInfo()">Add Player Info</button>
+<!-- PLAYERS -->
+<section id="playersSection">
+<h2>Players</h2>
 <div id="playersList"></div>
+</section>
 
-<hr>
-
-<h3>Matches</h3>
-<input type="text" id="matchText" placeholder="Match">
-<button class="adminOnly" onclick="addMatch()">Add Match</button>
+<!-- MATCHES -->
+<section id="matchesSection">
+<h2>Matches</h2>
 <div id="matchesList"></div>
+</section>
 
-<hr>
-
-<h3>News</h3>
-<input type="text" id="newsText" placeholder="News">
-<button class="adminOnly" onclick="addNews()">Add News</button>
+<!-- NEWS -->
+<section id="newsSection">
+<h2>News</h2>
 <div id="newsList"></div>
+</section>
 
-<hr>
-
-<h3>Gallery</h3>
-<input type="file" id="galleryImage">
-<button class="adminOnly" onclick="addGallery()">Add Image</button>
+<!-- GALLERY -->
+<section id="gallerySection">
+<h2>Gallery</h2>
 <div id="galleryList"></div>
-
 </section>
 
 <!-- PITCH -->
@@ -373,4 +379,56 @@ function loadList(type,element){
 function loadGallery(){
     let list=document.getElementById("galleryList");
     list.innerHTML="";
-    (JSON.parse(local
+    (JSON.parse(localStorage.getItem("gallery"))||[]).forEach((img,i)=>{
+        list.innerHTML+=`<div><img src="${img}" width="100"><br><button class="deleteBtn adminOnly" onclick="deleteItem('gallery',${i})">X</button></div>`;
+    });
+}
+
+// ADD ITEMS
+function addPlayerInfo(){
+    let data = JSON.parse(localStorage.getItem("players"))||[];
+    data.push(document.getElementById("playerName").value);
+    localStorage.setItem("players",JSON.stringify(data));
+    loadList("players","playersList");
+}
+
+function addMatch(){
+    let data = JSON.parse(localStorage.getItem("matches"))||[];
+    data.push(document.getElementById("matchText").value);
+    localStorage.setItem("matches",JSON.stringify(data));
+    loadList("matches","matchesList");
+}
+
+function addNews(){
+    let data = JSON.parse(localStorage.getItem("news"))||[];
+    data.push(document.getElementById("newsText").value);
+    localStorage.setItem("news",JSON.stringify(data));
+    loadList("news","newsList");
+}
+
+function addGallery(){
+    let file=document.getElementById("galleryImage").files[0];
+    let reader=new FileReader();
+    reader.onload=function(e){
+        let data=JSON.parse(localStorage.getItem("gallery"))||[];
+        data.push(e.target.result);
+        localStorage.setItem("gallery",JSON.stringify(data));
+        loadGallery();
+    };
+    if(file) reader.readAsDataURL(file);
+}
+
+// INIT
+function loadAll(){
+    reloadTeam();
+    loadList("players","playersList");
+    loadList("matches","matchesList");
+    loadList("news","newsList");
+    loadGallery();
+}
+
+loadAll();
+</script>
+
+</body>
+</html>
