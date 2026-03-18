@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
+
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -59,6 +58,7 @@ section{
 #newsSection{ background:#ffdddd; }
 #gallerySection{ background:#ffffdd; }
 #adminPanel{ background:#eeeeee; }
+#contactSection{ background:#cce5ff; color:black; }
 
 .pitch{
     position:relative;
@@ -90,7 +90,7 @@ section{
     border-radius:10px;
 }
 
-button,input,select{
+button,input,select,textarea{
     padding:10px;
     margin:5px;
     border:none;
@@ -134,7 +134,6 @@ footer{
 <button onclick="login()">Login</button>
 </div>
 
-<!-- Updated About Team Section -->
 <section>
 <h2>About Team</h2>
 <p>FC Lion is a passionate and fast-growing football club based in Kano, Nigeria. The club is dedicated to developing young talents, promoting teamwork, and building a strong football culture in the community. At FC Lion, we believe football is more than a game — it is a way to inspire discipline, unity, and success. Our players are committed, hardworking, and always ready to give their best on and off the pitch as we aim to grow into one of the top football clubs in Nigeria.</p>
@@ -191,10 +190,23 @@ footer{
 <div class="pitch" id="pitch"></div>
 </section>
 
+<!-- Contact Us Section -->
+<section id="contactSection">
+  <h2>Contact Us</h2>
+  <p>You can reach us via email or phone:</p>
+  <p>Email: <a href="mailto:info@lionstarfc.com">info@lionstarfc.com</a></p>
+  <p>Phone: +234 800 123 4567</p>
+  <h3>Send us a message:</h3>
+  <input type="text" id="contactName" placeholder="Your Name"><br>
+  <input type="email" id="contactEmail" placeholder="Your Email"><br>
+  <textarea id="contactMessage" placeholder="Your Message" rows="4" style="width:90%; padding:10px; border-radius:5px;"></textarea><br>
+  <button onclick="sendMessage()">Send</button>
+</section>
+
 <footer>© 2026 Lion Star FC</footer>
 
 <script>
-// ===== Fixed Admin Toggle and Login =====
+// ===== Admin Toggle and Login =====
 let adminPanel = document.getElementById("adminPanel");
 let loginBox = document.getElementById("loginBox");
 let pitch = document.getElementById("pitch");
@@ -232,7 +244,7 @@ function logout(){
     location.reload();
 }
 
-// ===== Remaining JS (unchanged) =====
+// ===== Team, Players, Matches, News, Gallery =====
 let formation="433";
 const positions={
 "433":[{top:450,left:45},{top:350,left:15},{top:350,left:35},{top:350,left:55},{top:350,left:75},{top:250,left:25},{top:250,left:45},{top:250,left:65},{top:100,left:25},{top:80,left:45},{top:100,left:65}],
@@ -360,6 +372,7 @@ function addGallery(){
     if(file) reader.readAsDataURL(file);
 }
 
+// ===== Load All =====
 function loadAll(){
     reloadTeam();
     loadList("players","playersList");
@@ -367,8 +380,26 @@ function loadAll(){
     loadList("news","newsList");
     loadGallery();
 }
-
 loadAll();
+
+// ===== Contact Form =====
+function sendMessage(){
+    let name = document.getElementById("contactName").value;
+    let email = document.getElementById("contactEmail").value;
+    let msg = document.getElementById("contactMessage").value;
+    if(!name || !email || !msg){
+        alert("Please fill all fields!");
+        return;
+    }
+    alert(`Thank you, ${name}! Your message has been received.`);
+    let contacts = JSON.parse(localStorage.getItem("contacts"))||[];
+    contacts.push({name,email,msg});
+    localStorage.setItem("contacts",JSON.stringify(contacts));
+
+    document.getElementById("contactName").value="";
+    document.getElementById("contactEmail").value="";
+    document.getElementById("contactMessage").value="";
+}
 </script>
 </body>
 </html>
