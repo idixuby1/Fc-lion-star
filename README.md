@@ -1,50 +1,41 @@
-<section id="adminPanel">
-<h2>Admin Panel</h2>
-<button onclick="logout()">Logout</button><br>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lion Star FC</title>
+<style>
+body{margin:0;font-family:Arial,sans-serif;background:#0b6623;color:white;text-align:center;}
+header{background:#111;padding:20px;position:relative;}
+header img{width:100px;border-radius:50%;}
+#adminBtn{position:absolute;top:20px;right:20px;background:#444;color:white;padding:8px 12px;border:none;border-radius:5px;cursor:pointer;}
+#loginBox{display:none;background:#111;padding:15px;border-radius:10px;width:200px;margin:10px auto;}
+section{margin:20px auto;padding:20px;border-radius:12px;width:90%;max-width:900px;color:black;}
+#playersSection{ background:#ddeeff; }#matchesSection{ background:#ddffdd; }#newsSection{ background:#ffdddd; }#gallerySection{ background:#ffffdd; }#adminPanel{ background:#eeeeee; display:none; }
+.pitch{position:relative;height:500px;background:green;border:4px solid white;border-radius:10px;margin-bottom:20px;}
+.player{position:absolute;width:60px;text-align:center;cursor:grab;}
+.player img{width:60px;height:60px;border-radius:50%;border:2px solid white;}
+.player span{display:block;font-size:12px;background:white;color:black;border-radius:10px;}
+button,input,select{padding:10px;margin:5px;border:none;border-radius:5px;cursor:pointer;}
+button{background:#111;color:white;}
+.adminOnly{ display:none; }
+.deleteBtn{ background:red; font-size:12px; padding:5px; cursor:pointer; }
+footer{background:#111;padding:15px;color:#aaa;}
+</style>
+</head>
+<body>
 
-<!-- Player for Pitch -->
-<input type="text" id="name" placeholder="Player Name">
-<select id="position">
-<option value="GK">Goalkeeper</option>
-<option value="DEF">Defender</option>
-<option value="MID">Midfielder</option>
-<option value="FWD">Forward</option>
-</select>
-<input type="file" id="image"><br>
-<button class="adminOnly" onclick="addPlayer()">Add Player</button>
+<header>
+<img src="images - 2026-03-03T054620.224.jpeg" alt="Lion Star FC Logo">
+<h1>⚽ Lion Star FC</h1>
+<button id="adminBtn" onclick="toggleLogin()">Admin</button>
+</header>
 
-<h3>Players List</h3>
-<input type="text" id="playerName" placeholder="Player Name">
-<button class="adminOnly" onclick="addPlayerInfo()">Add to List</button>
-<div id="playersList"></div>
+<div id="loginBox">
+<input type="text" id="user" placeholder="Username"><br>
+<input type="password" id="pass" placeholder="Password"><br>
+<button onclick="login()">Login</button>
+</div>
 
-<h3>Matches</h3>
-<input type="text" id="matchText" placeholder="Match Info">
-<button class="adminOnly" onclick="addMatch()">Add Match</button>
-<div id="matchesList"></div>
-
-<h3>News</h3>
-<input type="text" id="newsText" placeholder="News">
-<button class="adminOnly" onclick="addNews()">Add News</button>
-<div id="newsList"></div>
-
-<h3>Gallery</h3>
-<input type="file" id="galleryImage">
-<button class="adminOnly" onclick="addGallery()">Upload Image</button>
-<div id="galleryList"></div>
-
-<h3>Formation</h3>
-<select id="formation" onchange="setFormation()">
-<option value="433">4-3-3</option>
-<option value="442">4-4-2</option>
-<option value="352">3-5-2</option>
-<option value="4231">4-2-3-1</option>
-<option value="343">3-4-3</option>
-<option value="532">5-3-2</option>
-<option value="451">4-5-1</option>
-<option value="541">5-4-1</option>
-<option value="4141">4-1-4-1</option>
-<option value="343d">3-4-3 Diamond</option>
-</select>
-<button class="adminOnly" onclick="clearTeam()">Clear Team</button>
-</section>
+<section>
+<h2
