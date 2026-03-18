@@ -9,7 +9,7 @@ function toggleLogin(){
     loginBox.style.display = loginBox.style.display==="none" ? "block" : "none";
 }
 
-// LOGIN ✅ (NO RELOAD, ONLY SHOW BUTTONS)
+// LOGIN
 function login(){
     let u = document.getElementById("user").value;
     let p = document.getElementById("pass").value;
@@ -19,7 +19,7 @@ function login(){
         adminPanel.style.display="block";
         loginBox.style.display="none";
 
-        // 🔥 Show all admin buttons (including delete)
+        // SHOW DELETE BUTTONS (NO RELOAD)
         document.querySelectorAll(".adminOnly").forEach(el=>{
             el.style.display="inline-block";
         });
@@ -29,14 +29,15 @@ function login(){
     }
 }
 
-// AUTO LOGIN ✅
+// AUTO LOGIN
 if(localStorage.getItem("admin")==="true"){
     adminPanel.style.display="block";
 
-    // 🔥 Show admin buttons automatically
-    document.querySelectorAll(".adminOnly").forEach(el=>{
-        el.style.display="inline-block";
-    });
+    setTimeout(()=>{
+        document.querySelectorAll(".adminOnly").forEach(el=>{
+            el.style.display="inline-block";
+        });
+    },100);
 }
 
 // LOGOUT
@@ -82,23 +83,144 @@ function addPlayer(){
 function reloadTeam(){
     pitch.innerHTML="";
     let team = JSON.parse(localStorage.getItem("team"))||[];
+
     team.forEach((p,i)=>{
         let pos = positions[formation][i];
         let div = document.createElement("div");
         div.className="player";
         div.style.top=(p.y||pos.top)+"px";
         div.style.left=(p.x||pos.left)+"%";
+
         div.innerHTML=`<img src="${p.img}"><span>${p.name}</span>`;
 
         // DRAG
         div.onmousedown = function(e){
             let ox=e.offsetX, oy=e.offsetY;
+
             function moveHandler(e){
                 div.style.left=(e.pageX-pitch.offsetLeft-ox)/pitch.offsetWidth*100+"%";
                 div.style.top=(e.pageY-pitch.offsetTop-oy)+"px";
             }
+
             document.addEventListener("mousemove",moveHandler);
-            document.addEventListener("mouseup",()=>{ document.removeEventListener("mousemove",moveHandler); saveTeam(); }, {once:true});
+
+            document.addEventListener("mouseup",()=>{
+                document.removeEventListener("mousemove",moveHandler);
+                saveTeam();
+            }, {once:true});
         };
 
         // DOUBLE CLICK REMOVE
+        div.ondblclick=function(){
+            team.splice(i,1);
+            localStorage.setItem("team",JSON.stringify(team));
+            reloadTeam();
+        };
+
+        pitch.appendChild(div);
+    });
+}
+
+// SAVE PITCH
+function saveTeam(){
+    let team=[];
+    document.querySelectorAll(".player").forEach(el=>{
+        team.push({
+            name: el.querySelector("span").textContent,
+            img: el.querySelector("img").src,
+            x: parseFloat(el.style.left),
+            y: parseFloat(el.style.top)
+        });
+    });
+    localStorage.setItem("team",JSON.stringify(team));
+}
+
+// CLEAR PITCH
+function clearTeam(){
+    localStorage.removeItem("team");
+    reloadTeam();
+}
+
+// DELETE ITEM
+function deleteItem(type,index){
+    let data=JSON.parse(localStorage.getItem(type))||[];
+    data.splice(index,1);
+    localStorage.setItem(type,JSON.stringify(data));
+    loadAll();
+}
+
+// LOAD LIST (WITH SMALL INLINE BUTTON)
+function loadList(type,element){
+    let list=document.getElementById(element);
+    list.innerHTML="";
+
+    (JSON.parse(localStorage.getItem(type))||[]).forEach((item,i)=>{
+        list.innerHTML+=`
+        <p style="display:flex; justify-content:center; align-items:center; gap:5px;">
+            ${item}
+            <button class="deleteBtn adminOnly" onclick="deleteItem('${type}',${i})">✖</button>
+        </p>`;
+    });
+}
+
+// LOAD GALLERY
+function loadGallery(){
+    let list=document.getElementById("galleryList");
+    list.innerHTML="";
+
+    (JSON.parse(localStorage.getItem("gallery"))||[]).forEach((img,i)=>{
+        list.innerHTML+=`
+        <div style="margin:10px;">
+            <img src="${img}" width="100"><br>
+            <button class="deleteBtn adminOnly" onclick="deleteItem('gallery',${i})">✖</button>
+        </div>`;
+    });
+}
+
+// ADD ITEMS
+function addPlayerInfo(){
+    let data = JSON.parse(localStorage.getItem("players"))||[];
+    data.push(document.getElementById("playerName").value);
+    localStorage.setItem("players",JSON.stringify(data));
+    loadList("players","playersList");
+}
+
+function addMatch(){
+    let data = JSON.parse(localStorage.getItem("matches"))||[];
+    data.push(document.getElementById("matchText").value);
+    localStorage.setItem("matches",JSON.stringify(data));
+    loadList("matches","matchesList");
+}
+
+function addNews(){
+    let data = JSON.parse(localStorage.getItem("news"))||[];
+    data.push(document.getElementById("newsText").value);
+    localStorage.setItem("news",JSON.stringify(data));
+    loadList("news","newsList");
+}
+
+function addGallery(){
+    let file=document.getElementById("galleryImage").files[0];
+    let reader=new FileReader();
+
+    reader.onload=function(e){
+        let data=JSON.parse(localStorage.getItem("gallery"))||[];
+        data.push(e.target.result);
+        localStorage.setItem("gallery",JSON.stringify(data));
+        loadGallery();
+    };
+
+    if(file) reader.readAsDataURL(file);
+}
+
+// INIT
+function loadAll(){
+    reloadTeam();
+    loadList("players","playersList");
+    loadList("matches","matchesList");
+    loadList("news","newsList");
+    loadGallery();
+}
+
+loadAll();
+</script>
