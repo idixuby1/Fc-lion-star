@@ -193,10 +193,8 @@ footer{
 <!-- Contact Us Section -->
 <section id="contactSection">
   <h2>Contact Us</h2>
-  <p>You can reach us via email, phone, or WhatsApp:</p>
-  <p>Email: <a href="mailto:info@lionstarfc.com">info@lionstarfc.com</a></p>
-  <p>Phone: +234 800 123 4567</p>
-  <p>WhatsApp: <a href="https://wa.me/2349115568667" target="_blank">09115568667</a></p>
+  <p>You can reach us directly on WhatsApp:</p>
+  <p><a href="https://wa.me/2349115568667" target="_blank" style="color:green; font-weight:bold; font-size:18px;">09115568667</a></p>
 </section>
 
 <footer>© 2026 Lion Star FC</footer>
