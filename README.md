@@ -13,23 +13,72 @@ background:#0b6623;
 color:white;
 text-align:center;
 }
+
 header{
 background:#111;
 padding:20px;
 }
+
 header img{
 width:120px;
 border-radius:50%;
 }
+
 section{
 background:white;
 color:black;
 margin:20px auto;
 padding:20px;
-border-radius:12px;
+border-radius:15px;
 width:90%;
 max-width:900px;
+box-shadow:0 5px 15px rgba(0,0,0,0.3);
 }
+
+/* LOGIN */
+#loginBox{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:#0b6623;
+display:flex;
+justify-content:center;
+align-items:center;
+z-index:1000;
+}
+
+.login-card{
+background:#111;
+padding:30px;
+border-radius:10px;
+width:300px;
+}
+
+input,select,button{
+padding:10px;
+margin:5px;
+border:none;
+border-radius:5px;
+}
+
+button{
+background:#111;
+color:white;
+cursor:pointer;
+}
+
+button:hover{
+background:#444;
+}
+
+.deleteBtn{
+background:red;
+font-size:12px;
+padding:5px;
+}
+
 .pitch{
 position:relative;
 height:500px;
@@ -37,56 +86,48 @@ background:green;
 border:4px solid white;
 border-radius:10px;
 }
+
 .player{
 position:absolute;
 width:60px;
 text-align:center;
 cursor:grab;
 }
+
 .player img{
 width:60px;
 height:60px;
 border-radius:50%;
 border:2px solid white;
 }
+
 .player span{
 display:block;
 font-size:12px;
 background:white;
 color:black;
 border-radius:10px;
-margin-top:2px;
 }
-button,input,select{
-padding:10px;
-margin:5px;
-border-radius:5px;
-border:none;
-}
-button{
-background:#111;
-color:white;
-}
-button:hover{
-background:#444;
-}
-.deleteBtn{
-background:red;
-color:white;
-padding:3px 6px;
-font-size:12px;
-margin-left:10px;
-}
+
 footer{
 background:#111;
 padding:15px;
 color:#aaa;
-margin-top:20px;
 }
 </style>
 </head>
 
 <body>
+
+<!-- LOGIN -->
+<div id="loginBox">
+<div class="login-card">
+<h2>🔐 Admin Login</h2>
+<input type="text" id="user" placeholder="Username"><br>
+<input type="password" id="pass" placeholder="Password"><br>
+<button onclick="login()">Login</button>
+</div>
+</div>
 
 <header>
 <img src="images - 2026-03-03T054620.224.jpeg">
@@ -95,29 +136,25 @@ margin-top:20px;
 
 <section>
 <h2>About Team</h2>
-<p>Lion Star FC is a strong and passionate football club focused on teamwork and winning mentality.</p>
+<p>Lion Star FC is a strong football club focused on teamwork and winning.</p>
 </section>
 
 <!-- ADMIN PANEL -->
-<section>
+<section id="adminPanel" style="display:none;">
 <h2>Admin Panel</h2>
-<input type="password" id="pass" placeholder="Password"><br>
+<button onclick="logout()">Logout</button><br>
 
-<h3>Add Player Info</h3>
 <input type="text" id="playerName" placeholder="Player name">
-<button onclick="addPlayerInfo()">Add</button>
+<button onclick="addPlayerInfo()">Add Player</button>
 
-<h3>Add Match</h3>
-<input type="text" id="matchText" placeholder="Match result">
-<button onclick="addMatch()">Add</button>
+<input type="text" id="matchText" placeholder="Match">
+<button onclick="addMatch()">Add Match</button>
 
-<h3>Add News</h3>
 <input type="text" id="newsText" placeholder="News">
-<button onclick="addNews()">Add</button>
+<button onclick="addNews()">Add News</button>
 
-<h3>Add Gallery Image</h3>
 <input type="file" id="galleryImage">
-<button onclick="addGallery()">Add</button>
+<button onclick="addGallery()">Add Image</button>
 
 <br><br>
 
@@ -131,13 +168,13 @@ margin-top:20px;
 <option value="4231">4-2-3-1</option>
 <option value="343">3-4-3</option>
 <option value="532">5-3-2</option>
-</select><br>
+</select>
 
 <button onclick="addPlayer()">Add Player to Pitch</button>
 <button onclick="clearTeam()">Clear Team</button>
 </section>
 
-<!-- SECTIONS -->
+<!-- CONTENT -->
 <section id="playersSection" style="display:none;">
 <h2>Players</h2>
 <div id="playersList"></div>
@@ -158,24 +195,41 @@ margin-top:20px;
 <div id="galleryList"></div>
 </section>
 
-<!-- PITCH -->
 <section>
-<h2>Starting XI (Drag Players)</h2>
+<h2>Starting XI</h2>
 <div class="pitch" id="pitch"></div>
-</section>
-
-<section>
-<h2>Contact Us</h2>
-<p>📱 WhatsApp: 09115568667</p>
-<p>📷 Instagram: Lion_star_Fc</p>
 </section>
 
 <footer>© 2026 Lion Star FC</footer>
 
 <script>
-let maxPlayers=11;
-let formation="433";
+// LOGIN
+function login(){
+let u=document.getElementById("user").value;
+let p=document.getElementById("pass").value;
 
+if(u==="admin" && p==="1234"){
+localStorage.setItem("admin","true");
+document.getElementById("loginBox").style.display="none";
+document.getElementById("adminPanel").style.display="block";
+}else{
+alert("Wrong login!");
+}
+}
+
+function logout(){
+localStorage.removeItem("admin");
+location.reload();
+}
+
+// AUTO LOGIN CHECK
+if(localStorage.getItem("admin")==="true"){
+document.getElementById("loginBox").style.display="none";
+document.getElementById("adminPanel").style.display="block";
+}
+
+// FORMATIONS
+let formation="433";
 const positions={
 "433":[{top:450,left:45},{top:350,left:15},{top:350,left:35},{top:350,left:55},{top:350,left:75},{top:250,left:25},{top:250,left:45},{top:250,left:65},{top:100,left:25},{top:80,left:45},{top:100,left:65}],
 "442":[{top:450,left:45},{top:350,left:15},{top:350,left:35},{top:350,left:55},{top:350,left:75},{top:250,left:15},{top:250,left:35},{top:250,left:55},{top:250,left:75},{top:100,left:35},{top:100,left:55}],
@@ -185,24 +239,16 @@ const positions={
 "532":[{top:450,left:45},{top:350,left:10},{top:350,left:30},{top:350,left:50},{top:350,left:70},{top:350,left:90},{top:250,left:30},{top:250,left:50},{top:250,left:70},{top:100,left:35},{top:100,left:55}]
 };
 
-// ADMIN
-function isAdmin(){
-let pass=document.getElementById("pass").value;
-if(pass!=="1234"){alert("Admin only!"); return false;}
-return true;
-}
-
-// FORMATION
 function setFormation(){
 formation=document.getElementById("formation").value;
 reloadTeam();
 }
 
-// ADD PLAYER TO FIELD
+// TEAM
 function addPlayer(){
-if(!isAdmin()) return;
 let team=JSON.parse(localStorage.getItem("team"))||[];
-if(team.length>=maxPlayers){alert("Max 11 players"); return;}
+if(team.length>=11){alert("Max 11"); return;}
+
 let name=document.getElementById("name").value;
 let file=document.getElementById("image").files[0];
 
@@ -215,34 +261,29 @@ reloadTeam();
 reader.readAsDataURL(file);
 }
 
-// LOAD TEAM
 function reloadTeam(){
 let pitch=document.getElementById("pitch");
 pitch.innerHTML="";
 let team=JSON.parse(localStorage.getItem("team"))||[];
 
 team.forEach((p,i)=>{
-let pos=positions[formation][i]||{top:200,left:50};
+let pos=positions[formation][i];
 let div=document.createElement("div");
 div.className="player";
 div.style.top=(p.y||pos.top)+"px";
 div.style.left=(p.x||pos.left)+"%";
 div.innerHTML=`<img src="${p.img}"><span>${p.name}</span>`;
 
-// DRAG
-let offsetX,offsetY;
 div.onmousedown=function(e){
-offsetX=e.offsetX; offsetY=e.offsetY;
+let ox=e.offsetX, oy=e.offsetY;
 document.onmousemove=function(e){
-div.style.left=(e.pageX-pitch.offsetLeft-offsetX)/pitch.offsetWidth*100+"%";
-div.style.top=(e.pageY-pitch.offsetTop-offsetY)+"px";
+div.style.left=(e.pageX-pitch.offsetLeft-ox)/pitch.offsetWidth*100+"%";
+div.style.top=(e.pageY-pitch.offsetTop-oy)+"px";
 };
 document.onmouseup=function(){document.onmousemove=null; saveTeam();};
 };
 
-// REMOVE PLAYER
 div.ondblclick=function(){
-if(!isAdmin()) return;
 team.splice(i,1);
 localStorage.setItem("team",JSON.stringify(team));
 reloadTeam();
@@ -252,7 +293,6 @@ pitch.appendChild(div);
 });
 }
 
-// SAVE TEAM
 function saveTeam(){
 let team=[];
 document.querySelectorAll(".player").forEach(el=>{
@@ -267,36 +307,19 @@ localStorage.setItem("team",JSON.stringify(team));
 }
 
 function clearTeam(){
-if(!isAdmin()) return;
 localStorage.removeItem("team");
 reloadTeam();
 }
 
-// DELETE FUNCTION
+// DELETE
 function deleteItem(type,index){
-if(!isAdmin()) return;
 let data=JSON.parse(localStorage.getItem(type))||[];
 data.splice(index,1);
 localStorage.setItem(type,JSON.stringify(data));
 loadAll();
 }
 
-// SHOW SECTIONS
-function showSections(){
-if(localStorage.getItem("players")) document.getElementById("playersSection").style.display="block";
-if(localStorage.getItem("matches")) document.getElementById("matchesSection").style.display="block";
-if(localStorage.getItem("news")) document.getElementById("newsSection").style.display="block";
-if(localStorage.getItem("gallery")) document.getElementById("gallerySection").style.display="block";
-}
-
-// PLAYERS
-function addPlayerInfo(){
-if(!isAdmin()) return;
-let data=JSON.parse(localStorage.getItem("players"))||[];
-data.push(document.getElementById("playerName").value);
-localStorage.setItem("players",JSON.stringify(data));
-loadPlayers();
-}
+// LOAD FUNCTIONS
 function loadPlayers(){
 let list=document.getElementById("playersList");
 list.innerHTML="";
@@ -305,14 +328,6 @@ list.innerHTML+=`<p>${p} <button class="deleteBtn" onclick="deleteItem('players'
 });
 }
 
-// MATCHES
-function addMatch(){
-if(!isAdmin()) return;
-let data=JSON.parse(localStorage.getItem("matches"))||[];
-data.push(document.getElementById("matchText").value);
-localStorage.setItem("matches",JSON.stringify(data));
-loadMatches();
-}
 function loadMatches(){
 let list=document.getElementById("matchesList");
 list.innerHTML="";
@@ -321,14 +336,6 @@ list.innerHTML+=`<p>${m} <button class="deleteBtn" onclick="deleteItem('matches'
 });
 }
 
-// NEWS
-function addNews(){
-if(!isAdmin()) return;
-let data=JSON.parse(localStorage.getItem("news"))||[];
-data.push(document.getElementById("newsText").value);
-localStorage.setItem("news",JSON.stringify(data));
-loadNews();
-}
 function loadNews(){
 let list=document.getElementById("newsList");
 list.innerHTML="";
@@ -337,10 +344,50 @@ list.innerHTML+=`<p>${n} <button class="deleteBtn" onclick="deleteItem('news',${
 });
 }
 
-// GALLERY
+function loadGallery(){
+let list=document.getElementById("galleryList");
+list.innerHTML="";
+(JSON.parse(localStorage.getItem("gallery"))||[]).forEach((img,i)=>{
+list.innerHTML+=`
+<div>
+<img src="${img}" width="100"><br>
+<button class="deleteBtn" onclick="deleteItem('gallery',${i})">X</button>
+</div>`;
+});
+}
+
+// SHOW
+function showSections(){
+if(localStorage.getItem("players")) playersSection.style.display="block";
+if(localStorage.getItem("matches")) matchesSection.style.display="block";
+if(localStorage.getItem("news")) newsSection.style.display="block";
+if(localStorage.getItem("gallery")) gallerySection.style.display="block";
+}
+
+// ADD FUNCTIONS
+function addPlayerInfo(){
+let data=JSON.parse(localStorage.getItem("players"))||[];
+data.push(playerName.value);
+localStorage.setItem("players",JSON.stringify(data));
+loadPlayers();
+}
+
+function addMatch(){
+let data=JSON.parse(localStorage.getItem("matches"))||[];
+data.push(matchText.value);
+localStorage.setItem("matches",JSON.stringify(data));
+loadMatches();
+}
+
+function addNews(){
+let data=JSON.parse(localStorage.getItem("news"))||[];
+data.push(newsText.value);
+localStorage.setItem("news",JSON.stringify(data));
+loadNews();
+}
+
 function addGallery(){
-if(!isAdmin()) return;
-let file=document.getElementById("galleryImage").files[0];
+let file=galleryImage.files[0];
 let reader=new FileReader();
 reader.onload=function(e){
 let data=JSON.parse(localStorage.getItem("gallery"))||[];
@@ -349,17 +396,6 @@ localStorage.setItem("gallery",JSON.stringify(data));
 loadGallery();
 };
 reader.readAsDataURL(file);
-}
-function loadGallery(){
-let list=document.getElementById("galleryList");
-list.innerHTML="";
-(JSON.parse(localStorage.getItem("gallery"))||[]).forEach((img,i)=>{
-list.innerHTML+=`
-<div style="display:inline-block;margin:5px">
-<img src="${img}" width="100"><br>
-<button class="deleteBtn" onclick="deleteItem('gallery',${i})">X</button>
-</div>`;
-});
 }
 
 // INIT
@@ -371,6 +407,7 @@ loadNews();
 loadGallery();
 showSections();
 }
+
 loadAll();
 </script>
 
