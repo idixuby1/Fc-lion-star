@@ -183,12 +183,16 @@ footer{
 <input type="file" id="image"><br>
 
 <select id="formation" onchange="setFormation()">
-<option value="433">4-3-3</option>
-<option value="442">4-4-2</option>
-<option value="352">3-5-2</option>
-<option value="4231">4-2-3-1</option>
-<option value="343">3-4-3</option>
-<option value="532">5-3-2</option>
+    <option value="433">4-3-3</option>
+    <option value="442">4-4-2</option>
+    <option value="352">3-5-2</option>
+    <option value="4231">4-2-3-1</option>
+    <option value="343">3-4-3</option>
+    <option value="532">5-3-2</option>
+    <option value="451">4-5-1</option>
+    <option value="541">5-4-1</option>
+    <option value="4141">4-1-4-1</option>
+    <option value="343d">3-4-3 Diamond</option>
 </select>
 
 <button class="adminOnly" onclick="addPlayer()">Add to Pitch</button>
@@ -267,13 +271,17 @@ function logout(){
 
 // FORMATIONS
 let formation="433";
-const positions={
+const positions = {
 "433":[{top:450,left:45},{top:350,left:15},{top:350,left:35},{top:350,left:55},{top:350,left:75},{top:250,left:25},{top:250,left:45},{top:250,left:65},{top:100,left:25},{top:80,left:45},{top:100,left:65}],
 "442":[{top:450,left:45},{top:350,left:15},{top:350,left:35},{top:350,left:55},{top:350,left:75},{top:250,left:15},{top:250,left:35},{top:250,left:55},{top:250,left:75},{top:100,left:35},{top:100,left:55}],
 "352":[{top:450,left:45},{top:350,left:25},{top:350,left:45},{top:350,left:65},{top:250,left:10},{top:250,left:30},{top:250,left:50},{top:250,left:70},{top:250,left:90},{top:100,left:35},{top:100,left:55}],
 "4231":[{top:450,left:45},{top:350,left:15},{top:350,left:35},{top:350,left:55},{top:350,left:75},{top:280,left:35},{top:280,left:55},{top:200,left:25},{top:200,left:45},{top:200,left:65},{top:80,left:45}],
 "343":[{top:450,left:45},{top:350,left:25},{top:350,left:45},{top:350,left:65},{top:250,left:10},{top:250,left:30},{top:250,left:50},{top:250,left:70},{top:100,left:25},{top:80,left:45},{top:100,left:65}],
-"532":[{top:450,left:45},{top:350,left:10},{top:350,left:30},{top:350,left:50},{top:350,left:70},{top:350,left:90},{top:250,left:30},{top:250,left:50},{top:250,left:70},{top:100,left:35},{top:100,left:55}]
+"532":[{top:450,left:45},{top:350,left:10},{top:350,left:30},{top:350,left:50},{top:350,left:70},{top:350,left:90},{top:250,left:30},{top:250,left:50},{top:250,left:70},{top:100,left:35},{top:100,left:55}],
+"451":[{top:450,left:45},{top:350,left:15},{top:350,left:35},{top:350,left:55},{top:350,left:75},{top:250,left:15},{top:250,left:35},{top:250,left:55},{top:250,left:75},{top:250,left:45},{top:100,left:45}],
+"541":[{top:450,left:45},{top:350,left:10},{top:350,left:30},{top:350,left:50},{top:350,left:70},{top:350,left:90},{top:250,left:15},{top:250,left:35},{top:250,left:55},{top:250,left:75},{top:100,left:45}],
+"4141":[{top:450,left:45},{top:350,left:15},{top:350,left:35},{top:350,left:55},{top:350,left:75},{top:250,left:25},{top:250,left:45},{top:250,left:65},{top:250,left:85},{top:100,left:35},{top:100,left:55}],
+"343d":[{top:450,left:45},{top:350,left:25},{top:350,left:45},{top:350,left:65},{top:250,left:35},{top:250,left:45},{top:250,left:55},{top:100,left:25},{top:80,left:45},{top:100,left:65},{top:200,left:45}]
 };
 
 // FORMATION SWITCH
