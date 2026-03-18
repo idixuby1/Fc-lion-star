@@ -193,14 +193,10 @@ footer{
 <!-- Contact Us Section -->
 <section id="contactSection">
   <h2>Contact Us</h2>
-  <p>You can reach us via email or phone:</p>
+  <p>You can reach us via email, phone, or WhatsApp:</p>
   <p>Email: <a href="mailto:info@lionstarfc.com">info@lionstarfc.com</a></p>
   <p>Phone: +234 800 123 4567</p>
-  <h3>Send us a message:</h3>
-  <input type="text" id="contactName" placeholder="Your Name"><br>
-  <input type="email" id="contactEmail" placeholder="Your Email"><br>
-  <textarea id="contactMessage" placeholder="Your Message" rows="4" style="width:90%; padding:10px; border-radius:5px;"></textarea><br>
-  <button onclick="sendMessage()">Send</button>
+  <p>WhatsApp: <a href="https://wa.me/2349115568667" target="_blank">09115568667</a></p>
 </section>
 
 <footer>© 2026 Lion Star FC</footer>
@@ -381,25 +377,6 @@ function loadAll(){
     loadGallery();
 }
 loadAll();
-
-// ===== Contact Form =====
-function sendMessage(){
-    let name = document.getElementById("contactName").value;
-    let email = document.getElementById("contactEmail").value;
-    let msg = document.getElementById("contactMessage").value;
-    if(!name || !email || !msg){
-        alert("Please fill all fields!");
-        return;
-    }
-    alert(`Thank you, ${name}! Your message has been received.`);
-    let contacts = JSON.parse(localStorage.getItem("contacts"))||[];
-    contacts.push({name,email,msg});
-    localStorage.setItem("contacts",JSON.stringify(contacts));
-
-    document.getElementById("contactName").value="";
-    document.getElementById("contactEmail").value="";
-    document.getElementById("contactMessage").value="";
-}
 </script>
 </body>
 </html>
