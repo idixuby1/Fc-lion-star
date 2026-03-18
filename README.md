@@ -9,7 +9,7 @@ function toggleLogin(){
     loginBox.style.display = loginBox.style.display==="none" ? "block" : "none";
 }
 
-// LOGIN ✅ FIXED
+// LOGIN ✅ (NO RELOAD, ONLY SHOW BUTTONS)
 function login(){
     let u = document.getElementById("user").value;
     let p = document.getElementById("pass").value;
@@ -19,18 +19,24 @@ function login(){
         adminPanel.style.display="block";
         loginBox.style.display="none";
 
-        loadAll(); // 🔥 reload lists with delete buttons
+        // 🔥 Show all admin buttons (including delete)
+        document.querySelectorAll(".adminOnly").forEach(el=>{
+            el.style.display="inline-block";
+        });
 
-        document.querySelectorAll(".adminOnly").forEach(el=> el.style.display="inline-block");
     }else{
         alert("Wrong login!");
     }
 }
 
-// AUTO LOGIN
+// AUTO LOGIN ✅
 if(localStorage.getItem("admin")==="true"){
     adminPanel.style.display="block";
-    document.querySelectorAll(".adminOnly").forEach(el=> el.style.display="inline-block");
+
+    // 🔥 Show admin buttons automatically
+    document.querySelectorAll(".adminOnly").forEach(el=>{
+        el.style.display="inline-block";
+    });
 }
 
 // LOGOUT
@@ -76,7 +82,6 @@ function addPlayer(){
 function reloadTeam(){
     pitch.innerHTML="";
     let team = JSON.parse(localStorage.getItem("team"))||[];
-
     team.forEach((p,i)=>{
         let pos = positions[formation][i];
         let div = document.createElement("div");
@@ -97,34 +102,3 @@ function reloadTeam(){
         };
 
         // DOUBLE CLICK REMOVE
-        div.ondblclick=function(){
-            team.splice(i,1);
-            localStorage.setItem("team",JSON.stringify(team));
-            reloadTeam();
-        };
-
-        pitch.appendChild(div);
-    });
-}
-
-// SAVE TEAM
-function saveTeam(){
-    let team=[];
-    document.querySelectorAll(".player").forEach(el=>{
-        team.push({
-            name: el.querySelector("span").textContent,
-            img: el.querySelector("img").src,
-            x: parseFloat(el.style.left),
-            y: parseFloat(el.style.top)
-        });
-    });
-    localStorage.setItem("team",JSON.stringify(team));
-}
-
-// CLEAR TEAM
-function clearTeam(){
-    localStorage.removeItem("team");
-    reloadTeam();
-}
-
-// DELETE ITEM ✅
