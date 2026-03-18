@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
+
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -17,11 +16,30 @@ text-align:center;
 header{
 background:#111;
 padding:20px;
+position:relative;
 }
 
 header img{
-width:120px;
+width:100px;
 border-radius:50%;
+}
+
+/* ADMIN BUTTON */
+#adminBtn{
+position:absolute;
+top:20px;
+right:20px;
+background:#444;
+}
+
+/* LOGIN BOX */
+#loginBox{
+display:none;
+background:#111;
+padding:15px;
+border-radius:10px;
+width:200px;
+margin:10px auto;
 }
 
 section{
@@ -29,54 +47,9 @@ background:white;
 color:black;
 margin:20px auto;
 padding:20px;
-border-radius:15px;
+border-radius:12px;
 width:90%;
 max-width:900px;
-box-shadow:0 5px 15px rgba(0,0,0,0.3);
-}
-
-/* LOGIN */
-#loginBox{
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:#0b6623;
-display:flex;
-justify-content:center;
-align-items:center;
-z-index:1000;
-}
-
-.login-card{
-background:#111;
-padding:30px;
-border-radius:10px;
-width:300px;
-}
-
-input,select,button{
-padding:10px;
-margin:5px;
-border:none;
-border-radius:5px;
-}
-
-button{
-background:#111;
-color:white;
-cursor:pointer;
-}
-
-button:hover{
-background:#444;
-}
-
-.deleteBtn{
-background:red;
-font-size:12px;
-padding:5px;
 }
 
 .pitch{
@@ -109,6 +82,28 @@ color:black;
 border-radius:10px;
 }
 
+button,input,select{
+padding:10px;
+margin:5px;
+border:none;
+border-radius:5px;
+}
+
+button{
+background:#111;
+color:white;
+}
+
+.adminOnly{
+display:none;
+}
+
+.deleteBtn{
+background:red;
+font-size:12px;
+padding:5px;
+}
+
 footer{
 background:#111;
 padding:15px;
@@ -119,24 +114,23 @@ color:#aaa;
 
 <body>
 
+<header>
+<img src="images - 2026-03-03T054620.224.jpeg">
+<h1>⚽ Lion Star FC</h1>
+
+<button id="adminBtn" onclick="toggleLogin()">Admin</button>
+</header>
+
 <!-- LOGIN -->
 <div id="loginBox">
-<div class="login-card">
-<h2>🔐 Admin Login</h2>
 <input type="text" id="user" placeholder="Username"><br>
 <input type="password" id="pass" placeholder="Password"><br>
 <button onclick="login()">Login</button>
 </div>
-</div>
-
-<header>
-<img src="images - 2026-03-03T054620.224.jpeg">
-<h1>⚽ Lion Star FC</h1>
-</header>
 
 <section>
 <h2>About Team</h2>
-<p>Lion Star FC is a strong football club focused on teamwork and winning.</p>
+<p>Lion Star FC is a strong football club focused on teamwork and winning mentality.</p>
 </section>
 
 <!-- ADMIN PANEL -->
@@ -145,16 +139,16 @@ color:#aaa;
 <button onclick="logout()">Logout</button><br>
 
 <input type="text" id="playerName" placeholder="Player name">
-<button onclick="addPlayerInfo()">Add Player</button>
+<button class="adminOnly" onclick="addPlayerInfo()">Add Player</button>
 
 <input type="text" id="matchText" placeholder="Match">
-<button onclick="addMatch()">Add Match</button>
+<button class="adminOnly" onclick="addMatch()">Add Match</button>
 
 <input type="text" id="newsText" placeholder="News">
-<button onclick="addNews()">Add News</button>
+<button class="adminOnly" onclick="addNews()">Add News</button>
 
 <input type="file" id="galleryImage">
-<button onclick="addGallery()">Add Image</button>
+<button class="adminOnly" onclick="addGallery()">Add Image</button>
 
 <br><br>
 
@@ -170,27 +164,30 @@ color:#aaa;
 <option value="532">5-3-2</option>
 </select>
 
-<button onclick="addPlayer()">Add Player to Pitch</button>
-<button onclick="clearTeam()">Clear Team</button>
+<button class="adminOnly" onclick="addPlayer()">Add to Pitch</button>
+<button class="adminOnly" onclick="clearTeam()">Clear Team</button>
 </section>
 
-<!-- CONTENT -->
-<section id="playersSection" style="display:none;">
+<!-- PLAYERS -->
+<section id="playersSection">
 <h2>Players</h2>
 <div id="playersList"></div>
 </section>
 
-<section id="matchesSection" style="display:none;">
+<!-- MATCHES -->
+<section id="matchesSection">
 <h2>Matches</h2>
 <div id="matchesList"></div>
 </section>
 
-<section id="newsSection" style="display:none;">
+<!-- NEWS -->
+<section id="newsSection">
 <h2>News</h2>
 <div id="newsList"></div>
 </section>
 
-<section id="gallerySection" style="display:none;">
+<!-- GALLERY -->
+<section id="gallerySection">
 <h2>Gallery</h2>
 <div id="galleryList"></div>
 </section>
@@ -203,29 +200,43 @@ color:#aaa;
 <footer>© 2026 Lion Star FC</footer>
 
 <script>
+// TOGGLE LOGIN
+function toggleLogin(){
+let box=document.getElementById("loginBox");
+box.style.display = box.style.display==="none" ? "block" : "none";
+}
+
 // LOGIN
 function login(){
-let u=document.getElementById("user").value;
-let p=document.getElementById("pass").value;
+let u=user.value;
+let p=pass.value;
 
 if(u==="admin" && p==="1234"){
 localStorage.setItem("admin","true");
-document.getElementById("loginBox").style.display="none";
-document.getElementById("adminPanel").style.display="block";
+adminPanel.style.display="block";
+
+document.querySelectorAll(".adminOnly").forEach(el=>{
+el.style.display="inline-block";
+});
+
+loginBox.style.display="none";
 }else{
 alert("Wrong login!");
 }
 }
 
+// AUTO LOGIN
+if(localStorage.getItem("admin")==="true"){
+adminPanel.style.display="block";
+document.querySelectorAll(".adminOnly").forEach(el=>{
+el.style.display="inline-block";
+});
+}
+
+// LOGOUT
 function logout(){
 localStorage.removeItem("admin");
 location.reload();
-}
-
-// AUTO LOGIN CHECK
-if(localStorage.getItem("admin")==="true"){
-document.getElementById("loginBox").style.display="none";
-document.getElementById("adminPanel").style.display="block";
 }
 
 // FORMATIONS
@@ -249,12 +260,11 @@ function addPlayer(){
 let team=JSON.parse(localStorage.getItem("team"))||[];
 if(team.length>=11){alert("Max 11"); return;}
 
-let name=document.getElementById("name").value;
-let file=document.getElementById("image").files[0];
-
+let file=image.files[0];
 let reader=new FileReader();
+
 reader.onload=function(e){
-team.push({name,img:e.target.result,x:0,y:0});
+team.push({name:name.value,img:e.target.result,x:0,y:0});
 localStorage.setItem("team",JSON.stringify(team));
 reloadTeam();
 };
@@ -268,6 +278,7 @@ let team=JSON.parse(localStorage.getItem("team"))||[];
 
 team.forEach((p,i)=>{
 let pos=positions[formation][i];
+
 let div=document.createElement("div");
 div.className="player";
 div.style.top=(p.y||pos.top)+"px";
@@ -319,28 +330,14 @@ localStorage.setItem(type,JSON.stringify(data));
 loadAll();
 }
 
-// LOAD FUNCTIONS
-function loadPlayers(){
-let list=document.getElementById("playersList");
+// LOAD
+function loadList(type,element){
+let list=document.getElementById(element);
 list.innerHTML="";
-(JSON.parse(localStorage.getItem("players"))||[]).forEach((p,i)=>{
-list.innerHTML+=`<p>${p} <button class="deleteBtn" onclick="deleteItem('players',${i})">X</button></p>`;
-});
-}
-
-function loadMatches(){
-let list=document.getElementById("matchesList");
-list.innerHTML="";
-(JSON.parse(localStorage.getItem("matches"))||[]).forEach((m,i)=>{
-list.innerHTML+=`<p>${m} <button class="deleteBtn" onclick="deleteItem('matches',${i})">X</button></p>`;
-});
-}
-
-function loadNews(){
-let list=document.getElementById("newsList");
-list.innerHTML="";
-(JSON.parse(localStorage.getItem("news"))||[]).forEach((n,i)=>{
-list.innerHTML+=`<p>${n} <button class="deleteBtn" onclick="deleteItem('news',${i})">X</button></p>`;
+(JSON.parse(localStorage.getItem(type))||[]).forEach((item,i)=>{
+list.innerHTML+=`<p>${item} 
+<button class="deleteBtn adminOnly" onclick="deleteItem('${type}',${i})">X</button>
+</p>`;
 });
 }
 
@@ -351,39 +348,31 @@ list.innerHTML="";
 list.innerHTML+=`
 <div>
 <img src="${img}" width="100"><br>
-<button class="deleteBtn" onclick="deleteItem('gallery',${i})">X</button>
+<button class="deleteBtn adminOnly" onclick="deleteItem('gallery',${i})">X</button>
 </div>`;
 });
 }
 
-// SHOW
-function showSections(){
-if(localStorage.getItem("players")) playersSection.style.display="block";
-if(localStorage.getItem("matches")) matchesSection.style.display="block";
-if(localStorage.getItem("news")) newsSection.style.display="block";
-if(localStorage.getItem("gallery")) gallerySection.style.display="block";
-}
-
-// ADD FUNCTIONS
+// ADD
 function addPlayerInfo(){
 let data=JSON.parse(localStorage.getItem("players"))||[];
 data.push(playerName.value);
 localStorage.setItem("players",JSON.stringify(data));
-loadPlayers();
+loadList("players","playersList");
 }
 
 function addMatch(){
 let data=JSON.parse(localStorage.getItem("matches"))||[];
 data.push(matchText.value);
 localStorage.setItem("matches",JSON.stringify(data));
-loadMatches();
+loadList("matches","matchesList");
 }
 
 function addNews(){
 let data=JSON.parse(localStorage.getItem("news"))||[];
 data.push(newsText.value);
 localStorage.setItem("news",JSON.stringify(data));
-loadNews();
+loadList("news","newsList");
 }
 
 function addGallery(){
@@ -401,11 +390,10 @@ reader.readAsDataURL(file);
 // INIT
 function loadAll(){
 reloadTeam();
-loadPlayers();
-loadMatches();
-loadNews();
+loadList("players","playersList");
+loadList("matches","matchesList");
+loadList("news","newsList");
 loadGallery();
-showSections();
 }
 
 loadAll();
