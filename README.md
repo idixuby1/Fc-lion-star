@@ -1,4 +1,5 @@
-
+<!DOCTYPE html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -69,6 +70,13 @@ color:white;
 button:hover{
 background:#444;
 }
+.deleteBtn{
+background:red;
+color:white;
+padding:3px 6px;
+font-size:12px;
+margin-left:10px;
+}
 footer{
 background:#111;
 padding:15px;
@@ -87,10 +95,7 @@ margin-top:20px;
 
 <section>
 <h2>About Team</h2>
-<p>
-Lion Star FC is a strong and passionate football club focused on teamwork,
-discipline, and winning mentality.
-</p>
+<p>Lion Star FC is a strong and passionate football club focused on teamwork and winning mentality.</p>
 </section>
 
 <!-- ADMIN PANEL -->
@@ -100,19 +105,19 @@ discipline, and winning mentality.
 
 <h3>Add Player Info</h3>
 <input type="text" id="playerName" placeholder="Player name">
-<button onclick="addPlayerInfo()">Add Player</button>
+<button onclick="addPlayerInfo()">Add</button>
 
 <h3>Add Match</h3>
 <input type="text" id="matchText" placeholder="Match result">
-<button onclick="addMatch()">Add Match</button>
+<button onclick="addMatch()">Add</button>
 
 <h3>Add News</h3>
-<input type="text" id="newsText" placeholder="News update">
-<button onclick="addNews()">Add News</button>
+<input type="text" id="newsText" placeholder="News">
+<button onclick="addNews()">Add</button>
 
 <h3>Add Gallery Image</h3>
 <input type="file" id="galleryImage">
-<button onclick="addGallery()">Add Image</button>
+<button onclick="addGallery()">Add</button>
 
 <br><br>
 
@@ -123,13 +128,16 @@ discipline, and winning mentality.
 <option value="433">4-3-3</option>
 <option value="442">4-4-2</option>
 <option value="352">3-5-2</option>
+<option value="4231">4-2-3-1</option>
+<option value="343">3-4-3</option>
+<option value="532">5-3-2</option>
 </select><br>
 
 <button onclick="addPlayer()">Add Player to Pitch</button>
 <button onclick="clearTeam()">Clear Team</button>
 </section>
 
-<!-- DYNAMIC SECTIONS -->
+<!-- SECTIONS -->
 <section id="playersSection" style="display:none;">
 <h2>Players</h2>
 <div id="playersList"></div>
@@ -162,9 +170,7 @@ discipline, and winning mentality.
 <p>📷 Instagram: Lion_star_Fc</p>
 </section>
 
-<footer>
-© 2026 Lion Star FC
-</footer>
+<footer>© 2026 Lion Star FC</footer>
 
 <script>
 let maxPlayers=11;
@@ -173,10 +179,13 @@ let formation="433";
 const positions={
 "433":[{top:450,left:45},{top:350,left:15},{top:350,left:35},{top:350,left:55},{top:350,left:75},{top:250,left:25},{top:250,left:45},{top:250,left:65},{top:100,left:25},{top:80,left:45},{top:100,left:65}],
 "442":[{top:450,left:45},{top:350,left:15},{top:350,left:35},{top:350,left:55},{top:350,left:75},{top:250,left:15},{top:250,left:35},{top:250,left:55},{top:250,left:75},{top:100,left:35},{top:100,left:55}],
-"352":[{top:450,left:45},{top:350,left:25},{top:350,left:45},{top:350,left:65},{top:250,left:10},{top:250,left:30},{top:250,left:50},{top:250,left:70},{top:250,left:90},{top:100,left:35},{top:100,left:55}]
+"352":[{top:450,left:45},{top:350,left:25},{top:350,left:45},{top:350,left:65},{top:250,left:10},{top:250,left:30},{top:250,left:50},{top:250,left:70},{top:250,left:90},{top:100,left:35},{top:100,left:55}],
+"4231":[{top:450,left:45},{top:350,left:15},{top:350,left:35},{top:350,left:55},{top:350,left:75},{top:280,left:35},{top:280,left:55},{top:200,left:25},{top:200,left:45},{top:200,left:65},{top:80,left:45}],
+"343":[{top:450,left:45},{top:350,left:25},{top:350,left:45},{top:350,left:65},{top:250,left:10},{top:250,left:30},{top:250,left:50},{top:250,left:70},{top:100,left:25},{top:80,left:45},{top:100,left:65}],
+"532":[{top:450,left:45},{top:350,left:10},{top:350,left:30},{top:350,left:50},{top:350,left:70},{top:350,left:90},{top:250,left:30},{top:250,left:50},{top:250,left:70},{top:100,left:35},{top:100,left:55}]
 };
 
-// ADMIN CHECK
+// ADMIN
 function isAdmin(){
 let pass=document.getElementById("pass").value;
 if(pass!=="1234"){alert("Admin only!"); return false;}
@@ -189,13 +198,14 @@ formation=document.getElementById("formation").value;
 reloadTeam();
 }
 
-// ADD PLAYER TO PITCH
+// ADD PLAYER TO FIELD
 function addPlayer(){
 if(!isAdmin()) return;
 let team=JSON.parse(localStorage.getItem("team"))||[];
-if(team.length>=maxPlayers){alert("Only 11 players allowed!"); return;}
+if(team.length>=maxPlayers){alert("Max 11 players"); return;}
 let name=document.getElementById("name").value;
 let file=document.getElementById("image").files[0];
+
 let reader=new FileReader();
 reader.onload=function(e){
 team.push({name,img:e.target.result,x:0,y:0});
@@ -230,8 +240,9 @@ div.style.top=(e.pageY-pitch.offsetTop-offsetY)+"px";
 document.onmouseup=function(){document.onmousemove=null; saveTeam();};
 };
 
-// DELETE
+// REMOVE PLAYER
 div.ondblclick=function(){
+if(!isAdmin()) return;
 team.splice(i,1);
 localStorage.setItem("team",JSON.stringify(team));
 reloadTeam();
@@ -261,9 +272,16 @@ localStorage.removeItem("team");
 reloadTeam();
 }
 
-// ===== EXTRA SECTIONS =====
+// DELETE FUNCTION
+function deleteItem(type,index){
+if(!isAdmin()) return;
+let data=JSON.parse(localStorage.getItem(type))||[];
+data.splice(index,1);
+localStorage.setItem(type,JSON.stringify(data));
+loadAll();
+}
 
-// SHOW
+// SHOW SECTIONS
 function showSections(){
 if(localStorage.getItem("players")) document.getElementById("playersSection").style.display="block";
 if(localStorage.getItem("matches")) document.getElementById("matchesSection").style.display="block";
@@ -279,12 +297,11 @@ data.push(document.getElementById("playerName").value);
 localStorage.setItem("players",JSON.stringify(data));
 loadPlayers();
 }
-
 function loadPlayers(){
 let list=document.getElementById("playersList");
 list.innerHTML="";
-(JSON.parse(localStorage.getItem("players"))||[]).forEach(p=>{
-list.innerHTML+=`<p>${p}</p>`;
+(JSON.parse(localStorage.getItem("players"))||[]).forEach((p,i)=>{
+list.innerHTML+=`<p>${p} <button class="deleteBtn" onclick="deleteItem('players',${i})">X</button></p>`;
 });
 }
 
@@ -296,12 +313,11 @@ data.push(document.getElementById("matchText").value);
 localStorage.setItem("matches",JSON.stringify(data));
 loadMatches();
 }
-
 function loadMatches(){
 let list=document.getElementById("matchesList");
 list.innerHTML="";
-(JSON.parse(localStorage.getItem("matches"))||[]).forEach(m=>{
-list.innerHTML+=`<p>${m}</p>`;
+(JSON.parse(localStorage.getItem("matches"))||[]).forEach((m,i)=>{
+list.innerHTML+=`<p>${m} <button class="deleteBtn" onclick="deleteItem('matches',${i})">X</button></p>`;
 });
 }
 
@@ -313,12 +329,11 @@ data.push(document.getElementById("newsText").value);
 localStorage.setItem("news",JSON.stringify(data));
 loadNews();
 }
-
 function loadNews(){
 let list=document.getElementById("newsList");
 list.innerHTML="";
-(JSON.parse(localStorage.getItem("news"))||[]).forEach(n=>{
-list.innerHTML+=`<p>${n}</p>`;
+(JSON.parse(localStorage.getItem("news"))||[]).forEach((n,i)=>{
+list.innerHTML+=`<p>${n} <button class="deleteBtn" onclick="deleteItem('news',${i})">X</button></p>`;
 });
 }
 
@@ -335,12 +350,15 @@ loadGallery();
 };
 reader.readAsDataURL(file);
 }
-
 function loadGallery(){
 let list=document.getElementById("galleryList");
 list.innerHTML="";
-(JSON.parse(localStorage.getItem("gallery"))||[]).forEach(img=>{
-list.innerHTML+=`<img src="${img}" style="width:100px;margin:5px;">`;
+(JSON.parse(localStorage.getItem("gallery"))||[]).forEach((img,i)=>{
+list.innerHTML+=`
+<div style="display:inline-block;margin:5px">
+<img src="${img}" width="100"><br>
+<button class="deleteBtn" onclick="deleteItem('gallery',${i})">X</button>
+</div>`;
 });
 }
 
@@ -353,9 +371,8 @@ loadNews();
 loadGallery();
 showSections();
 }
-
 loadAll();
 </script>
 
 </body>
-</head>
+</html>
