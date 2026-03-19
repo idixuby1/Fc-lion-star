@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -93,7 +93,7 @@ section{
     border-radius:10px;
 }
 
-button,input,select,textarea{
+button,input,select{
     padding:10px;
     margin:5px;
     border:none;
@@ -128,7 +128,7 @@ footer{
 <body>
 
 <header>
-<img src="images - 2026-03-03T054620.224.jpeg">
+<img src="images - 2026-03-03T054620.224.jpeg" id="logo">
 <h1>⚽ Real Lion FC</h1>
 <button id="adminBtn" onclick="toggleLogin()">Control</button>
 </header>
@@ -197,14 +197,22 @@ footer{
 <footer>© 2026 Real Lion FC</footer>
 
 <script>
-// SECRET KEY TO SHOW CONTROL BUTTON
-document.addEventListener("keydown", function(e){
-    if(e.key === "A"){
+// TAP LOGO 3 TIMES TO UNLOCK
+let tapCount = 0;
+
+document.getElementById("logo").addEventListener("click", function(){
+    tapCount++;
+
+    if(tapCount === 3){
         document.getElementById("adminBtn").style.display = "block";
+        alert("Control unlocked!");
+        tapCount = 0;
     }
+
+    setTimeout(()=>{ tapCount = 0; }, 2000);
 });
 
-// TOGGLE
+// TOGGLE LOGIN
 function toggleLogin(){
     let box = document.getElementById("loginBox");
     box.style.display = box.style.display === "block" ? "none" : "block";
@@ -235,8 +243,6 @@ function logout(){
     localStorage.removeItem("admin");
     location.reload();
 }
-
-// KEEP YOUR OTHER FUNCTIONS SAME...
 </script>
 
 </body>
