@@ -2,7 +2,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lion Star FC</title>
+<title>Real Lion FC</title>
 <style>
 body{
     margin:0;
@@ -123,8 +123,8 @@ footer{
 </head>
 <body>
 <header>
-<img src="images - 2026-03-03T054620.224.jpeg" alt="Lion Star FC Logo">
-<h1>⚽ Lion Star FC</h1>
+<img src="images - 2026-03-03T054620.224.jpeg" alt="Real Lion FC Logo">
+<h1>⚽ Real Lion FC</h1>
 <button id="adminBtn" onclick="toggleLogin()">Admin</button>
 </header>
 
@@ -136,7 +136,7 @@ footer{
 
 <section>
 <h2>About Team</h2>
-<p>FC Lion is a passionate and fast-growing football club based in Kano, Nigeria. The club is dedicated to developing young talents, promoting teamwork, and building a strong football culture in the community. At FC Lion, we believe football is more than a game — it is a way to inspire discipline, unity, and success. Our players are committed, hardworking, and always ready to give their best on and off the pitch as we aim to grow into one of the top football clubs in Nigeria.</p>
+<p>Real Lion FC is a passionate and fast-growing football club based in Kano, Nigeria. The club is dedicated to developing young talents, promoting teamwork, and building a strong football culture in the community. At Real Lion FC, we believe football is more than a game — it is a way to inspire discipline, unity, and success. Our players are committed, hardworking, and always ready to give their best on and off the pitch as we aim to grow into one of the top football clubs in Nigeria.</p>
 </section>
 
 <section id="adminPanel" style="display:none;">
@@ -197,7 +197,7 @@ footer{
   <p><a href="https://wa.me/2349115568667" target="_blank" style="color:green; font-weight:bold; font-size:18px;">09115568667</a></p>
 </section>
 
-<footer>© 2026 Lion Star FC</footer>
+<footer>© 2026 Real Lion FC</footer>
 
 <script>
 // ===== Admin Toggle and Login =====
