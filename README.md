@@ -13,16 +13,18 @@ body{
     color:white;
     text-align:center;
 }
+
 header{
     background:#111;
     padding:20px;
     position:relative;
 }
+
 header img{
     width:100px;
     border-radius:50%;
-    cursor:pointer;
 }
+
 #adminBtn{
     position:absolute;
     top:20px;
@@ -35,6 +37,7 @@ header img{
     cursor:pointer;
     display:none;
 }
+
 #loginBox{
     display:none;
     background:#111;
@@ -43,6 +46,7 @@ header img{
     width:200px;
     margin:10px auto;
 }
+
 section{
     margin:20px auto;
     padding:20px;
@@ -51,6 +55,14 @@ section{
     max-width:900px;
     color:black;
 }
+
+#playersSection{ background:#ddeeff; }
+#matchesSection{ background:#ddffdd; }
+#newsSection{ background:#ffdddd; }
+#gallerySection{ background:#ffffdd; }
+#adminPanel{ background:#eeeeee; }
+#contactSection{ background:#cce5ff; color:black; }
+
 .pitch{
     position:relative;
     height:500px;
@@ -58,18 +70,21 @@ section{
     border:4px solid white;
     border-radius:10px;
 }
+
 .player{
     position:absolute;
     width:60px;
     text-align:center;
     cursor:grab;
 }
+
 .player img{
     width:60px;
     height:60px;
     border-radius:50%;
     border:2px solid white;
 }
+
 .player span{
     display:block;
     font-size:12px;
@@ -77,26 +92,31 @@ section{
     color:black;
     border-radius:10px;
 }
+
 button,input,select{
     padding:10px;
     margin:5px;
     border:none;
     border-radius:5px;
 }
+
 button{
     background:#111;
     color:white;
     cursor:pointer;
 }
+
 .adminOnly{
     display:none;
 }
+
 .deleteBtn{
     background:red;
     font-size:12px;
     padding:5px;
     cursor:pointer;
 }
+
 footer{
     background:#111;
     padding:15px;
@@ -104,6 +124,7 @@ footer{
 }
 </style>
 </head>
+
 <body>
 
 <header>
@@ -112,34 +133,58 @@ footer{
 <button id="adminBtn" onclick="toggleLogin()">Control</button>
 </header>
 
-<!-- LOGIN -->
+<!-- ACCESS BOX -->
 <div id="loginBox">
 <input type="text" id="accessCode" placeholder="Access Code"><br>
 <button onclick="login()">Enter</button>
 </div>
+
+<section>
+<h2>About Team</h2>
+<p>Real Lion FC is a passionate and fast-growing football club based in Kano, Nigeria...</p>
+</section>
 
 <!-- CONTROL PANEL -->
 <section id="adminPanel" style="display:none;">
 <h2>Club Control</h2>
 <button onclick="logout()">Exit</button><br>
 
-<!-- Add Section -->
-<input type="text" id="newSectionName" placeholder="New Section Name">
-<select id="newSectionType">
-<option value="list">List</option>
-<option value="gallery">Gallery</option>
-</select>
-<button class="adminOnly" onclick="addNewSection()">Add Section</button>
+<input type="text" id="playerName" placeholder="Player name">
+<button class="adminOnly" onclick="addPlayerInfo()">Add Player</button>
+
+<input type="text" id="matchText" placeholder="Match">
+<button class="adminOnly" onclick="addMatch()">Add Match</button>
+
+<input type="text" id="newsText" placeholder="News">
+<button class="adminOnly" onclick="addNews()">Add News</button>
+
+<input type="file" id="galleryImage">
+<button class="adminOnly" onclick="addGallery()">Add Image</button>
+
 <br><br>
 
-<!-- Add Item to Section -->
-<select id="selectSection"></select><br>
-<input type="text" id="newItemText" placeholder="New Item (for lists)">
-<input type="file" id="newItemImage">
-<button class="adminOnly" onclick="addItem()">Add Item</button>
+<input type="text" id="name" placeholder="Player name">
+<input type="file" id="image"><br>
+
+<select id="formation" onchange="setFormation()">
+<option value="433">4-3-3</option>
+<option value="442">4-4-2</option>
+<option value="352">3-5-2</option>
+<option value="4231">4-2-3-1</option>
+<option value="343">3-4-3</option>
+<option value="532">5-3-2</option>
+</select>
+
+<button class="adminOnly" onclick="addPlayer()">Add to Pitch</button>
+<button class="adminOnly" onclick="clearTeam()">Clear Team</button>
 </section>
 
-<section id="pitchSection">
+<section id="playersSection"><h2>Players</h2><div id="playersList"></div></section>
+<section id="matchesSection"><h2>Matches</h2><div id="matchesList"></div></section>
+<section id="newsSection"><h2>News</h2><div id="newsList"></div></section>
+<section id="gallerySection"><h2>Gallery</h2><div id="galleryList"></div></section>
+
+<section>
 <h2>Starting XI</h2>
 <div class="pitch" id="pitch"></div>
 </section>
@@ -152,127 +197,51 @@ footer{
 <footer>© 2026 Real Lion FC</footer>
 
 <script>
-// ================= ADMIN CONTROL =================
+// TAP LOGO 3 TIMES TO UNLOCK
 let tapCount = 0;
+
 document.getElementById("logo").addEventListener("click", function(){
     tapCount++;
+
     if(tapCount === 3){
         document.getElementById("adminBtn").style.display = "block";
         alert("Control unlocked!");
         tapCount = 0;
     }
-    setTimeout(()=>{ tapCount=0; },2000);
+
+    setTimeout(()=>{ tapCount = 0; }, 2000);
 });
 
+// TOGGLE LOGIN
 function toggleLogin(){
     let box = document.getElementById("loginBox");
-    box.style.display = box.style.display==="block"?"none":"block";
+    box.style.display = box.style.display === "block" ? "none" : "block";
 }
 
+// LOGIN
 function login(){
     let code = document.getElementById("accessCode").value;
-    if(code==="lion123"){
+    if(code === "lion123"){
         localStorage.setItem("admin","true");
         showAdminPanel();
-        document.getElementById("loginBox").style.display="none";
-    } else { alert("Wrong code!"); }
+        document.getElementById("loginBox").style.display = "none";
+    } else {
+        alert("Wrong code!");
+    }
 }
 
 function showAdminPanel(){
     document.getElementById("adminPanel").style.display="block";
-    document.querySelectorAll(".adminOnly").forEach(el=>el.style.display="inline-block");
+    document.querySelectorAll(".adminOnly").forEach(el=> el.style.display="inline-block");
 }
 
-if(localStorage.getItem("admin")==="true") showAdminPanel();
+if(localStorage.getItem("admin")==="true"){
+    showAdminPanel();
+}
 
 function logout(){
     localStorage.removeItem("admin");
     location.reload();
-}
-
-// ================= DYNAMIC SECTIONS =================
-let sections = JSON.parse(localStorage.getItem("sections")) || [
-    {id:"pitchSection", name:"Starting XI", type:"list"}
-];
-
-function saveSections(){ localStorage.setItem("sections", JSON.stringify(sections)); }
-
-function renderSections(){
-    // Remove old dynamic sections
-    document.querySelectorAll(".dynamicSection")?.forEach(el=>el.remove());
-    let select = document.getElementById("selectSection");
-    select.innerHTML="";
-    sections.forEach(sec=>{
-        if(sec.id==="pitchSection" || sec.id==="contactSection") return;
-        let s = document.createElement("section");
-        s.className="dynamicSection";
-        s.id=sec.id;
-        s.innerHTML = `<h2>${sec.name} <button class="deleteBtn adminOnly" onclick="deleteSection('${sec.id}')">X</button></h2><div id="${sec.id}List"></div>`;
-        document.body.insertBefore(s, document.getElementById("contactSection"));
-        let opt = document.createElement("option");
-        opt.value=sec.id; opt.textContent=sec.name;
-        select.appendChild(opt);
-    });
-    document.querySelectorAll(".adminOnly").forEach(el=>el.style.display="inline-block");
-}
-renderSections();
-
-function addNewSection(){
-    let name = document.getElementById("newSectionName").value.trim();
-    let type = document.getElementById("newSectionType").value;
-    if(!name) return alert("Enter a name");
-    let id = name.replace(/\s+/g,"") + Date.now();
-    sections.push({id,name,type});
-    saveSections();
-    renderSections();
-    document.getElementById("newSectionName").value="";
-}
-
-function deleteSection(id){
-    sections = sections.filter(sec=>sec.id!==id);
-    localStorage.setItem("sections", JSON.stringify(sections));
-    document.getElementById(id)?.remove();
-    renderSections();
-}
-
-function addItem(){
-    let sectionId = document.getElementById("selectSection").value;
-    let sec = sections.find(s=>s.id===sectionId);
-    if(!sec) return;
-    let dataKey = sectionId+"_data";
-    let data = JSON.parse(localStorage.getItem(dataKey))||[];
-    if(sec.type==="list"){
-        let text = document.getElementById("newItemText").value.trim();
-        if(!text) return;
-        data.push(text);
-        localStorage.setItem(dataKey, JSON.stringify(data));
-        document.getElementById(sectionId+"List").innerHTML="";
-        data.forEach((d,i)=>{
-            document.getElementById(sectionId+"List").innerHTML+=`<p>${d} <button class="deleteBtn adminOnly" onclick="deleteItem('${dataKey}',${i},'${sectionId}')">X</button></p>`;
-        });
-        document.getElementById("newItemText").value="";
-    } else if(sec.type==="gallery"){
-        let file=document.getElementById("newItemImage").files[0];
-        if(!file) return;
-        let reader = new FileReader();
-        reader.onload=function(e){
-            data.push(e.target.result);
-            localStorage.setItem(dataKey, JSON.stringify(data));
-            let list=document.getElementById(sectionId+"List");
-            list.innerHTML="";
-            data.forEach((img,i)=>{
-                list.innerHTML+=`<div><img src="${img}" width="100"><br><button class="deleteBtn adminOnly" onclick="deleteItem('${dataKey}',${i},'${sectionId}')">X</button></div>`;
-            });
-        }
-        reader.readAsDataURL(file);
-    }
-}
-
-function deleteItem(key,index,sectionId){
-    let data = JSON.parse(localStorage.getItem(key))||[];
-    data.splice(index,1);
-    localStorage.setItem(key, JSON.stringify(data));
-    addItem(); // refresh
 }
 </script>
 
