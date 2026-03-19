@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
+
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -216,7 +215,7 @@ function toggleLogin(){
 // LOGIN
 function login(){
     let code = document.getElementById("accessCode").value;
-    if(code === "lion123"){
+    if(code === "Islamic+1"){   // <-- secret code updated here
         localStorage.setItem("admin","true");
         showAdminPanel();
         document.getElementById("loginBox").style.display = "none";
@@ -326,7 +325,6 @@ function deleteItem(type,index){
     let data = JSON.parse(localStorage.getItem(type))||[];
     data.splice(index,1);
     localStorage.setItem(type, JSON.stringify(data));
-    // reload section
     if(type==='players') loadPlayers();
     else if(type==='matches') loadMatches();
     else if(type==='news') loadNews();
